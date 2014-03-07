@@ -1,9 +1,10 @@
 import pygame, sys
 import config
-from lib.classes import state
 from pygame.locals import *
+from lib.classes import state
+from lib.graphics.colors import *
 
-class Macro(state.State):
+class Title(state.State):
 	def handle_event(self, event):
 		if event.type == QUIT:
 			pygame.quit()
@@ -13,4 +14,5 @@ class Macro(state.State):
 		pass
 
 	def init(self):
-		pass
+		pygame.display.set_caption("Tech Comm Strategy Game")
+		config.DISPLAY.fill(WHITE)
