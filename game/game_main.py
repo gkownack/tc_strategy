@@ -6,8 +6,6 @@ from pygame.locals import *
 pygame.init()
 config.init()
 
-
-
 while 1:
 	for event in pygame.event.get():
 		config.STATE.handle_event(event);
