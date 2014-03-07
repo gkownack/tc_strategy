@@ -1,7 +1,7 @@
 import pygame, sys
 import config
 from pygame.locals import *
-from lib.classes import state
+from states import state
 from lib.graphics.colors import *
 
 class Title(state.State):

@@ -2,8 +2,7 @@
 # Imported by everyone
 
 import pygame
-from macro import macro_state
-from title import title_state
+from states.title import title_state
 
 def init():
 	global DISPLAY, WINDOW_HEIGHT, WINDOW_WIDTH, STATE
