@@ -5,7 +5,7 @@ from pygame.locals import *
 # Initialization routines
 pygame.init()
 config.init()
-
+print "fak u billy"
 while 1:
     for event in pygame.event.get():
         config.STATE.handle_event(event);

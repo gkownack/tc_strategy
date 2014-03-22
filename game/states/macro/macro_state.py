@@ -13,6 +13,7 @@ class Macro(state.State):
     XBOXES = WINDOWWIDTH/BOXSIDE
     YBOXES = (WINDOWHEIGHT)/BOXSIDE
     squares = []
+    cursor = None
 
     def handle_event(self, event):
         if event.type == QUIT:
@@ -33,6 +34,7 @@ class Macro(state.State):
                 column.append(macro_classes.Macro_Square(None, x, y, macro_classes.Macro_Grass()))
             self.squares.append(column)
             column = []
+        self.cursor = (0,0)
 
     def draw_board(self):
         for x in range(self.XBOXES):
