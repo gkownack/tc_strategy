@@ -7,6 +7,7 @@ pygame.init()
 config.init()
 
 while 1:
+    "I'm a boss!"
     for event in pygame.event.get():
         config.STATE.handle_event(event);
     config.STATE.update()
