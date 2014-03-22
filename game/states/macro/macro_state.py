@@ -13,4 +13,4 @@ class Macro(state.State):
         pass
 
     def init(self):
-        pass
+        print "MACRO INIT"
