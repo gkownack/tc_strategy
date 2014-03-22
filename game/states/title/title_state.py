@@ -26,7 +26,7 @@ class Title(state.State):
         pass
 
     def init(self):
-        pygame.display.set_caption("Tech Comm Strategy Game")
+        pygame.display.set_caption("Iron Legacy")
         config.DISPLAY.fill(WHITE)
         start = pygame.Rect(config.DISPLAY.get_rect())
         start.width /= self.BUTTON_SIZE
