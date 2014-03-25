@@ -3,7 +3,6 @@ import config
 from pygame.locals import *
 
 # Initialization routines
-# turns billy on
 pygame.init()
 config.init()
 
@@ -12,9 +11,3 @@ while 1:
         config.STATE.handle_event(event);
     config.STATE.update()
     pygame.display.update()
-
-def jafarr_smells(scent):
-    if scent == GOOD:
-       return "You're a liar; he smells bad"
-    else:
-       return "Okay."
