@@ -2,7 +2,7 @@ import pygame, sys
 import config
 from pygame.locals import *
 
-# Initialization routines
+# Initialization Routines
 pygame.init()
 config.init()
 
