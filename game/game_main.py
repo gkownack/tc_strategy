@@ -7,7 +7,6 @@ pygame.init()
 config.init()
 
 while 1:
-    '''Fuck Jon Farr, he smells'''
     for event in pygame.event.get():
         config.STATE.handle_event(event);
     config.STATE.update()
