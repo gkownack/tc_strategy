@@ -3,6 +3,7 @@ import config
 from pygame.locals import *
 
 # Initialization routines
+# turns billy on
 pygame.init()
 config.init()
 
