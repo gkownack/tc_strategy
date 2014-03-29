@@ -6,9 +6,9 @@ from pygame.locals import *
 from lib.graphics.colors import *
 
 class Macro(state.State):
-    WINDOWWIDTH = 1000
-    WINDOWHEIGHT = 600
-    BOXSIDE = 25
+    WINDOWWIDTH = 1536
+    WINDOWHEIGHT = 864
+    BOXSIDE = 96
     assert (WINDOWWIDTH%BOXSIDE == 0 and WINDOWHEIGHT%BOXSIDE == 0)
     XBOXES = WINDOWWIDTH/BOXSIDE
     YBOXES = (WINDOWHEIGHT)/BOXSIDE
@@ -41,8 +41,12 @@ class Macro(state.State):
         column = []
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
-                column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
-                                                         x, y, macro_classes.Macro_Grass()))
+                if(y%2 == 0):
+                    column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
+                                                             x, y, macro_classes.Macro_SmallSword()))
+                else:
+                    column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
+                                                             x, y, macro_classes.Macro_SmallSwordAnim()))
             self.squares.append(column)
             column = []
         self.cursor = (0,0)
