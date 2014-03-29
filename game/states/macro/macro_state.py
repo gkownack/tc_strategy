@@ -6,9 +6,9 @@ from pygame.locals import *
 from lib.graphics.colors import *
 
 class Macro(state.State):
-    WINDOWWIDTH = 1536
+    WINDOWWIDTH = 1512
     WINDOWHEIGHT = 864
-    BOXSIDE = 96
+    BOXSIDE = 72
     assert (WINDOWWIDTH%BOXSIDE == 0 and WINDOWHEIGHT%BOXSIDE == 0)
     XBOXES = WINDOWWIDTH/BOXSIDE
     YBOXES = (WINDOWHEIGHT)/BOXSIDE
