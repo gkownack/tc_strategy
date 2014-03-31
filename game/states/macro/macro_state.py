@@ -29,6 +29,12 @@ class Macro(state.State):
                 self.cursor = (self.cursor[0], min(self.YBOXES - 1, self.cursor[1] + 1))
             if event.key == K_d or event.key == K_RIGHT:
                 self.cursor = (min(self.XBOXES - 1, self.cursor[0] + 1), self.cursor[1])
+        elif event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                mousex, mousey = event.pos
+                x = mousex / self.BOXSIDE
+                y = mousey / self.BOXSIDE
+                self.cursor = (x,y)
 
     def update(self):
         self.draw_board()
