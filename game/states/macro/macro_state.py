@@ -31,6 +31,9 @@ class Macro(state.State):
                 self.cursor = (self.cursor[0], min(self.YBOXES - 1, self.cursor[1] + 1))
             if event.key == K_d or event.key == K_RIGHT:
                 self.cursor = (min(self.XBOXES - 1, self.cursor[0] + 1), self.cursor[1])
+            if event.key == K_ESCAPE:
+                pygame.quit()
+                sys.exit()
         elif event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 mousex, mousey = event.pos
