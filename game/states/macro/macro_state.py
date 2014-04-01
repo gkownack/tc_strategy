@@ -33,6 +33,16 @@ class Macro(state.State):
     def update(self):
         self.draw_board()
 
+    def getTerrain(x,y):
+        random.seed(x,y)
+        t = random.randint(0,2)
+        if t == 0:
+            return macro_classes.Macro_Grass
+        elif t == 1:
+            return macro_classes.Macro_Mountain
+        elif t == 2:
+            return macro_classes.Macro_Tree
+
     def init(self):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
         pygame.display.set_caption("Macro")
@@ -41,12 +51,9 @@ class Macro(state.State):
         column = []
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
-                if(y%2 == 0):
-                    column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
-                                                             x, y, macro_classes.Macro_SmallSword()))
-                else:
-                    column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
-                                                             x, y, macro_classes.Macro_SmallSwordAnim()))
+                terrain = getTerrain(x,y)
+                column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
+                                                         x, y, getTerrain(x,y))
             self.squares.append(column)
             column = []
         self.cursor = (0,0)
