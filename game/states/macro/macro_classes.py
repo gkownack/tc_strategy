@@ -15,17 +15,14 @@ class Macro_Tree(Macro_Terrain):
 class Macro_Water(Macro_Terrain):
     pic = pygame.image.load('lib/graphics/water.png')
 
-class Macro_SmallSword(Macro_Terrain):
-    pic = pygame.image.load('lib/graphics/SmallSword.png')
-
-class Macro_SmallSwordAnim(Macro_Terrain):
-    pic = pygame.image.load('lib/graphics/SmallSwordAnim.png')
-
 class Macro_Square():
-    rect = x = y = terrain = None
+    rect = x = y = terrain = unit = None
 
     def __init__(self, rect, x, y, terrain):
         self.rect = rect
         self.x = x
         self.y = y
         self.terrain = terrain
+
+    def set_unit(self, unit):
+        self.unit = unit

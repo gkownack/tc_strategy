@@ -3,6 +3,7 @@ import config
 import macro_classes
 import random
 from states import state
+from units import units
 from pygame.locals import *
 from lib.graphics.colors import *
 
@@ -66,10 +67,18 @@ class Macro(state.State):
             column = []
         self.cursor = (0,0)
 
+        # for testing sprites:
+        self.squares[0][0].unit = units.Unit(units.Attributes.Melee)
+        self.squares[1][0].unit = units.Unit(units.Attributes.Arcane)
+        self.squares[2][0].unit = units.Unit(units.Attributes.Divine)
+
     def draw_board(self):
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
-                config.DISPLAY.blit(self.squares[x][y].terrain.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                square = self.squares[x][y]
+                config.DISPLAY.blit(square.terrain.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                if square.unit != None:
+                    config.DISPLAY.blit(self.squares[x][y].unit.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
         self.draw_grid()
         pygame.draw.rect(config.DISPLAY, self.cursor_color, self.squares[self.cursor[0]][self.cursor[1]].rect, 2)
 
