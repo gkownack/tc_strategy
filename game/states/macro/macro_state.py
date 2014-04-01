@@ -47,7 +47,7 @@ class Macro(state.State):
             return macro_classes.Macro_Grass
         elif t == 3 or t == 4:
             return macro_classes.Macro_Tree
-        elfi t == 5:
+        elif t == 5:
             return macro_classes.Macro_Water
         else:
             return macro_classes.Macro_Mountain
