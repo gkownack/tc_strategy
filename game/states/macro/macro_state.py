@@ -39,6 +39,11 @@ class Macro(state.State):
                 self.cursor = (x,y)
 
     def update(self):
+        for x in range(self.XBOXES):
+            for y in range(self.YBOXES):
+                square = self.squares[x][y]
+                if square.unit != None:
+                    square.unit.update()
         self.draw_board()
 
     def getTerrain(self, x, y):
@@ -78,7 +83,7 @@ class Macro(state.State):
                 square = self.squares[x][y]
                 config.DISPLAY.blit(square.terrain.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
                 if square.unit != None:
-                    config.DISPLAY.blit(self.squares[x][y].unit.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                    config.DISPLAY.blit(square.unit.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
         self.draw_grid()
         pygame.draw.rect(config.DISPLAY, self.cursor_color, self.squares[self.cursor[0]][self.cursor[1]].rect, 2)
 
