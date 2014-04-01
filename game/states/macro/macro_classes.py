@@ -6,6 +6,15 @@ class Macro_Terrain():
 class Macro_Grass(Macro_Terrain):
     pic = pygame.image.load('lib/graphics/grass.png')
 
+class Macro_Mountain(Macro_Terrain):
+    pic = pygame.image.load('lib/graphics/mountain.png')
+
+class Macro_Tree(Macro_Terrain):
+    pic = pygame.image.load('lib/graphics/tree.png')
+
+class Macro_Water(Macro_Terrain):
+    pic = pygame.image.load('lib/graphics/water.png')
+
 class Macro_SmallSword(Macro_Terrain):
     pic = pygame.image.load('lib/graphics/SmallSword.png')
 

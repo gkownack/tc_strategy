@@ -1,6 +1,7 @@
 import pygame, sys
 import config
 import macro_classes
+import random
 from states import state
 from pygame.locals import *
 from lib.graphics.colors import *
@@ -39,15 +40,17 @@ class Macro(state.State):
     def update(self):
         self.draw_board()
 
-    def getTerrain(x,y):
-        random.seed(x,y)
-        t = random.randint(0,2)
-        if t == 0:
+    def getTerrain(self, x, y):
+        random.seed((x,y))
+        t = random.randint(0,6)
+        if t == 0 or t == 1 or t == 2:
             return macro_classes.Macro_Grass
-        elif t == 1:
-            return macro_classes.Macro_Mountain
-        elif t == 2:
+        elif t == 3 or t == 4:
             return macro_classes.Macro_Tree
+        elfi t == 5:
+            return macro_classes.Macro_Water
+        else:
+            return macro_classes.Macro_Mountain
 
     def init(self):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
@@ -57,9 +60,8 @@ class Macro(state.State):
         column = []
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
-                terrain = getTerrain(x,y)
                 column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
-                                                         x, y, getTerrain(x,y))
+                                                         x, y, self.getTerrain(x,y)))
             self.squares.append(column)
             column = []
         self.cursor = (0,0)
