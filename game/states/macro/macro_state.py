@@ -19,6 +19,10 @@ class Macro(state.State):
     cursor_color = RED
     cursor_rect = None
     selected = None
+    mask = pygame.Surface((BOXSIDE,BOXSIDE))
+    mask.set_alpha(80)
+    boxCosts = []
+    boxPaths = []
 
     def handle_event(self, event):
         if event.type == QUIT:
@@ -43,23 +47,11 @@ class Macro(state.State):
                     if square.unit is not None:
                         self.selected = square.unit
                         self.cursor_color = CYAN
-                        boxCosts = []
-                        column = []
-                        boxPaths = []
-                        column2 = []
-                        for x in range(self.XBOXES):
-                            for y in range(self.YBOXES):
-                                self.squares[x][y].mask = None
-                                column.append(-1)
-                                column2.append("")
-                            boxCosts.append(column)
-                            boxPaths.append(column2)
-                            column = []
-                            column2 = []
-                        self.dijkstra(square, self.selected.stats["move"], boxCosts, boxPaths, "")
                 else:
                     self.selected = None
                     self.cursor_color = RED
+            if self.selected is None:
+                self.run_dijkstra()
         elif event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 mousex, mousey = event.pos
@@ -107,6 +99,7 @@ class Macro(state.State):
         self.squares[1][0].unit = units.Unit(units.Attributes.Arcane)
         self.squares[2][0].unit = units.Unit(units.Attributes.Divine)
         self.update()
+        self.run_dijkstra()
         pygame.display.update()
 
     def draw_board(self):
@@ -116,6 +109,9 @@ class Macro(state.State):
                 config.DISPLAY.blit(square.terrain.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
                 if square.unit != None:
                     config.DISPLAY.blit(square.unit.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                if square.mask != None:
+                    self.mask.fill(square.mask)
+                    config.DISPLAY.blit(self.mask, square.rect.topleft)
         self.draw_grid()
         if self.cursor_rect is not None:
             config.DIRTY_RECTS += [self.cursor_rect]
@@ -128,6 +124,28 @@ class Macro(state.State):
         for y in range(self.BOXSIDE, self.WINDOWHEIGHT, self.BOXSIDE):
             pygame.draw.line(config.DISPLAY, BLACK, (0, y), (self.WINDOWWIDTH, y))
 
+    def run_dijkstra(self):
+        boxCosts = []
+        column = []
+        boxPaths = []
+        column2 = []
+        for x in range(self.XBOXES):
+            for y in range(self.YBOXES):
+                if self.squares[x][y].mask is not None:
+                    config.DIRTY_RECTS.append(self.squares[x][y])
+                    self.squares[x][y].mask = None
+                column.append(-1)
+                column2.append("")
+            boxCosts.append(column)
+            boxPaths.append(column2)
+            column = []
+            column2 = []
+        square = self.squares[self.cursor[0]][self.cursor[1]]
+        if square.unit is not None:
+            self.dijkstra(square, square.unit.stats["move"], boxCosts, boxPaths, "")
+        self.boxCosts = boxCosts
+        self.boxPaths = boxPaths
+
     def validDijk(self, x, y, newx, newy, grid, weight, boxCosts):
         XBOXES = self.XBOXES
         YBOXES = self.YBOXES
@@ -136,6 +154,7 @@ class Macro(state.State):
             return False
         if newy < 0 or newy >= YBOXES:
             return False
+        config.DIRTY_RECTS += [grid[newx][newy]]
         if grid[newx][newy].terrain.impass == True:
             grid[newx][newy].mask = RED
             return False
@@ -162,3 +181,7 @@ class Macro(state.State):
         for z in toSearch:
             self.dijkstra(z[0], weight-z[1], boxCosts, boxPaths, path+z[2])
         current.mask = BLUE
+<<<<<<< HEAD
+        config.DIRTY_RECTS += [current]
+=======
+>>>>>>> a1e23e12ecfd69f0afc7bf2b0141e2237de5a2d0
