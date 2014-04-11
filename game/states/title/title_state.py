@@ -4,6 +4,7 @@ from pygame.locals import *
 from states import state
 from lib.graphics.colors import *
 from states.macro import macro_state
+from states.micro import micro_state
 
 class Title(state.State):
     FONT_SIZE = 40
@@ -20,6 +21,9 @@ class Title(state.State):
                 mousex, mousey = event.pos
                 if self.start.collidepoint((mousex, mousey)) == True:
                     config.STATE = macro_state.Macro()
+                    config.MACRO = config.STATE
+                    config.MICRO = micro_state.Micro()
+                    config.MICRO.init()
                     config.STATE.init()
 
     def update(self):

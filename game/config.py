@@ -5,7 +5,7 @@ import pygame
 from states.title import title_state
 
 def init():
-    global DISPLAY, WINDOW_HEIGHT, WINDOW_WIDTH, STATE, ANIMATION_INTERVAL, DIRTY_RECTS
+    global DISPLAY, WINDOW_HEIGHT, WINDOW_WIDTH, STATE, ANIMATION_INTERVAL, DIRTY_RECTS, MICRO, MACRO
     ANIMATION_INTERVAL = 500 # milliseconds per frame
     WINDOW_WIDTH = 300
     WINDOW_HEIGHT = 400

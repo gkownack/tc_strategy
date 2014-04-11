@@ -59,6 +59,10 @@ class Macro(state.State):
                     elif square.unit is not None and self.selected is not None:
                         self.selected = square
                         self.run_dijkstra()
+            elif event.key == K_SPACE:
+                config.STATE = config.MICRO
+                config.STATE.update()
+                pygame.display.update()
             if self.selected is None:
                 self.run_dijkstra()
         elif event.type == MOUSEBUTTONDOWN:
@@ -69,6 +73,7 @@ class Macro(state.State):
                 self.cursor = (x,y)
 
     def update(self):
+        pygame.display.set_caption("Macro")
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 square = self.squares[x][y]
