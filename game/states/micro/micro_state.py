@@ -73,7 +73,6 @@ class Micro(state.State):
                 self.cursor = (x,y)
 
     def update(self):
-        config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
         pygame.display.set_caption("Micro")
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
