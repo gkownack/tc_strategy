@@ -98,6 +98,7 @@ class Macro(state.State):
         self.squares[0][0].unit = units.Unit(units.Attributes.Melee)
         self.squares[1][0].unit = units.Unit(units.Attributes.Arcane)
         self.squares[2][0].unit = units.Unit(units.Attributes.Divine)
+	self.squares[3][0].unit = units.Unit(units.Attributes.Ranged)
         self.update()
         self.run_dijkstra()
         pygame.display.update()
