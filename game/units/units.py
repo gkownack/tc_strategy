@@ -21,8 +21,8 @@ class Unit():
         self.pics["Melee"] = [pygame.image.load('lib/graphics/SmallSword.png'),
                               pygame.image.load('lib/graphics/SmallSwordAnim.png')]
 
-        self.pics["Ranged"] = [pygame.image.load('lib/graphics/SmallSword.png'),      # change when we make ranged sprite
-                               pygame.image.load('lib/graphics/SmallSwordAnim.png')] # change when we make ranged sprite
+        self.pics["Ranged"] = [pygame.image.load('lib/graphics/Ranged.png'),
+                               pygame.image.load('lib/graphics/RangedAnim.png')]
 
         self.pics["Arcane"] = [pygame.image.load('lib/graphics/ArcaneMage.png'),
                                pygame.image.load('lib/graphics/ArcaneMageAnim.png')]
