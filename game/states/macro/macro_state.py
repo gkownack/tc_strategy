@@ -29,6 +29,7 @@ class Macro(state.State):
             pygame.quit()
             sys.exit()
         elif event.type == KEYDOWN:
+            config.DIRTY_RECTS.append(self.squares[self.cursor[0]][self.cursor[1]].rect)
             if event.key == K_w or event.key == K_UP:
                 self.cursor = (self.cursor[0], max(0, self.cursor[1] - 1))
             elif event.key == K_a or event.key == K_LEFT:
@@ -180,4 +181,7 @@ class Macro(state.State):
         for z in toSearch:
             self.dijkstra(z[0], weight-z[1], boxCosts, boxPaths, path+z[2])
         current.mask = BLUE
+<<<<<<< HEAD
         config.DIRTY_RECTS += [current]
+=======
+>>>>>>> a1e23e12ecfd69f0afc7bf2b0141e2237de5a2d0
