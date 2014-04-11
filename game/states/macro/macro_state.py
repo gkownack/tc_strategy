@@ -181,7 +181,4 @@ class Macro(state.State):
         for z in toSearch:
             self.dijkstra(z[0], weight-z[1], boxCosts, boxPaths, path+z[2])
         current.mask = BLUE
-<<<<<<< HEAD
         config.DIRTY_RECTS += [current]
-=======
->>>>>>> a1e23e12ecfd69f0afc7bf2b0141e2237de5a2d0
