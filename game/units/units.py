@@ -9,6 +9,7 @@ class Unit():
     skills = [0 for i in xrange(4)]
     primary_attribute = team = pics = pic = pic_index = None
     last_update = time.clock()*1000
+    stats = {"move":7}
 
     def __init__(self, primary_attribute):
         self.primary_attribute = primary_attribute
