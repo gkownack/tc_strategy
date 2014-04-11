@@ -49,12 +49,16 @@ class Macro(state.State):
                         self.cursor_color = CYAN
                 else:
                     square = self.squares[self.cursor[0]][self.cursor[1]]
-                    if square.mask == BLUE and (square.unit is None or square.unit == selected.unit):
+                    if square.mask == BLUE and (square.unit is None or square.unit == self.selected.unit):
                         square.unit = self.selected.unit
-                        self.selected.unit = None
+                        if square != self.selected:
+                            self.selected.unit = None
                         config.DIRTY_RECTS += [square, self.selected]
-                    self.selected = None
-                    self.cursor_color = RED
+                        self.selected = None
+                        self.cursor_color = RED
+                    elif square.unit is not None and self.selected is not None:
+                        self.selected = square
+                        self.run_dijkstra()
             if self.selected is None:
                 self.run_dijkstra()
         elif event.type == MOUSEBUTTONDOWN:

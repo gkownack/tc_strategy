@@ -12,3 +12,4 @@ while 1:
     config.STATE.update()
     pygame.display.update(config.DIRTY_RECTS)
     config.DIRTY_RECTS = []
+
