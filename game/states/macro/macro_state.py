@@ -17,9 +17,9 @@ class Macro(state.State):
     squares = []
     cursor = None
     cursor_color = RED
+    cursor_rect = None
 
     def handle_event(self, event):
-        config.DIRTY_RECTS += [self.squares[self.cursor[0]][self.cursor[1]].rect]
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
@@ -41,7 +41,6 @@ class Macro(state.State):
                 x = mousex / self.BOXSIDE
                 y = mousey / self.BOXSIDE                
                 self.cursor = (x,y)
-        config.DIRTY_RECTS += [self.squares[self.cursor[0]][self.cursor[1]].rect]
 
     def update(self):
         for x in range(self.XBOXES):
@@ -93,7 +92,10 @@ class Macro(state.State):
                 if square.unit != None:
                     config.DISPLAY.blit(square.unit.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
         self.draw_grid()
-        pygame.draw.rect(config.DISPLAY, self.cursor_color, self.squares[self.cursor[0]][self.cursor[1]].rect, 2)
+        if self.cursor_rect is not None:
+            config.DIRTY_RECTS += [self.cursor_rect]
+        self.cursor_rect = pygame.draw.rect(config.DISPLAY, self.cursor_color, self.squares[self.cursor[0]][self.cursor[1]].rect, 2)
+        config.DIRTY_RECTS += [self.cursor_rect]
 
     def draw_grid(self):
         for x in range(self.BOXSIDE, self.WINDOWWIDTH, self.BOXSIDE):
