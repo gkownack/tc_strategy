@@ -41,3 +41,4 @@ class Title(state.State):
         font_rect.centery = start.centery
         config.DISPLAY.blit(font_surf, font_rect)
         self.start = start
+        pygame.display.update()
