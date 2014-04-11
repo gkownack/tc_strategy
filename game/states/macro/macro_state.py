@@ -48,6 +48,11 @@ class Macro(state.State):
                         self.selected = square
                         self.cursor_color = CYAN
                 else:
+                    square = self.squares[self.cursor[0]][self.cursor[1]]
+                    if square.mask == BLUE and (square.unit is None or square.unit == selected.unit):
+                        square.unit = self.selected.unit
+                        self.selected.unit = None
+                        config.DIRTY_RECTS += [square, self.selected]
                     self.selected = None
                     self.cursor_color = RED
             if self.selected is None:
