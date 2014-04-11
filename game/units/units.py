@@ -29,21 +29,7 @@ class Unit():
 
         self.pics["Divine"] = [pygame.image.load('lib/graphics/DivineMage.png'),
                                pygame.image.load('lib/graphics/DivineMageAnim.png')]
-	'''
-        if primary_attribute == Attributes.Melee:
-            self.pics = [pygame.image.load('lib/graphics/SmallSword.png'),
-                         pygame.image.load('lib/graphics/SmallSwordAnim.png')]
-        elif primary_attribute == Attributes.Ranged:
-            # This should be updated when we make a ranged sprite
-            self.pics = [pygame.image.load('lib/graphics/SmallSword.png'),
-                         pygame.image.load('lib/graphics/SmallSwordAnim.png')]
-        elif primary_attribute == Attributes.Arcane:
-            self.pics = [pygame.image.load('lib/graphics/ArcaneMage.png'),
-                         pygame.image.load('lib/graphics/ArcaneMageAnim.png')]
-        elif primary_attribute == Attributes.Divine:
-            self.pics = [pygame.image.load('lib/graphics/DivineMage.png'),
-                         pygame.image.load('lib/graphics/DivineMageAnim.png')]
-	'''
+
         self.pic = self.pics[self.primary_attribute][0]
         self.pic_index = 0
 
