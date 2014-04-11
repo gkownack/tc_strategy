@@ -25,6 +25,7 @@ class Macro(state.State):
             pygame.quit()
             sys.exit()
         elif event.type == KEYDOWN:
+            config.DIRTY_RECTS.append(self.squares[self.cursor[0]][self.cursor[1]].rect)
             if event.key == K_w or event.key == K_UP:
                 self.cursor = (self.cursor[0], max(0, self.cursor[1] - 1))
             elif event.key == K_a or event.key == K_LEFT:
