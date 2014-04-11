@@ -45,9 +45,14 @@ class Macro(state.State):
                 if self.selected is None:
                     square = self.squares[self.cursor[0]][self.cursor[1]]
                     if square.unit is not None:
-                        self.selected = square.unit
+                        self.selected = square
                         self.cursor_color = CYAN
                 else:
+                    square = self.squares[self.cursor[0]][self.cursor[1]]
+                    if square.mask == BLUE and (square.unit is None or square.unit == selected.unit):
+                        square.unit = self.selected.unit
+                        self.selected.unit = None
+                        config.DIRTY_RECTS += [square, self.selected]
                     self.selected = None
                     self.cursor_color = RED
             if self.selected is None:
@@ -113,11 +118,45 @@ class Macro(state.State):
                 if square.mask != None:
                     self.mask.fill(square.mask)
                     config.DISPLAY.blit(self.mask, square.rect.topleft)
+                    config.DIRTY_RECTS.append(square)
         self.draw_grid()
         if self.cursor_rect is not None:
             config.DIRTY_RECTS += [self.cursor_rect]
         self.cursor_rect = pygame.draw.rect(config.DISPLAY, self.cursor_color, self.squares[self.cursor[0]][self.cursor[1]].rect, 3)
         config.DIRTY_RECTS += [self.cursor_rect]
+
+        #Draw the arrows 'n' shit
+        if self.selected != None:
+            BOXSIDE = self.BOXSIDE
+            DISPLAYSURF = config.DISPLAY
+            current = self.selected.rect.center
+            x, y = self.cursor[0], self.cursor[1]
+            path = self.boxPaths[x][y]
+            for z in path:
+                if z == 'u':
+                    nextcoord = (current[0], current[1] - BOXSIDE)
+                    pygame.draw.line(DISPLAYSURF, WHITE, current, nextcoord, BOXSIDE/8)
+                if z == 'd':
+                    nextcoord = (current[0], current[1] + BOXSIDE)
+                    pygame.draw.line(DISPLAYSURF, WHITE, current, nextcoord, BOXSIDE/8)
+                if z == 'l':
+                    nextcoord = (current[0] - BOXSIDE, current[1])
+                    pygame.draw.line(DISPLAYSURF, WHITE, current, nextcoord, BOXSIDE/8)
+                if z == 'r':
+                    nextcoord = (current[0] + BOXSIDE, current[1])
+                    pygame.draw.line(DISPLAYSURF, WHITE, current, nextcoord, BOXSIDE/8)
+                current = nextcoord
+            if current == self.selected.rect.center:
+                pass
+            elif z == 'l':
+                pygame.draw.polygon(DISPLAYSURF, WHITE, [(current[0]-BOXSIDE/6, current[1]), (current[0]+BOXSIDE/6, current[1]+BOXSIDE/6), (current[0]+BOXSIDE/6, current[1]-BOXSIDE/6)])
+            elif z == 'd':
+                pygame.draw.polygon(DISPLAYSURF, WHITE, [(current[0], current[1]+BOXSIDE/6), (current[0]+BOXSIDE/6, current[1]-BOXSIDE/6), (current[0]-BOXSIDE/6, current[1]-BOXSIDE/6)])
+            elif z == 'r':
+                pygame.draw.polygon(DISPLAYSURF, WHITE, [(current[0]+BOXSIDE/6, current[1]), (current[0]-BOXSIDE/6, current[1]-BOXSIDE/6), (current[0]-BOXSIDE/6, current[1]+BOXSIDE/6)])
+            elif z == 'u':
+                pygame.draw.polygon(DISPLAYSURF, WHITE, [(current[0], current[1]-BOXSIDE/6), (current[0]-BOXSIDE/6, current[1]+BOXSIDE/6), (current[0]+BOXSIDE/6, current[1]+BOXSIDE/6)])
+
 
     def draw_grid(self):
         for x in range(self.BOXSIDE, self.WINDOWWIDTH, self.BOXSIDE):
