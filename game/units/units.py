@@ -37,6 +37,8 @@ class Unit():
             elif self.pic_index == 1:
                 self.pic_index = 0
             self.pic = self.pics[self.pic_index]
+            return True
+        return False
         
 
     

@@ -10,4 +10,5 @@ while 1:
     for event in pygame.event.get():
         config.STATE.handle_event(event);
     config.STATE.update()
-    pygame.display.update()
+    pygame.display.update(config.DIRTY_RECTS)
+    config.DIRTY_RECTS = []

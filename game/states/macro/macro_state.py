@@ -19,6 +19,7 @@ class Macro(state.State):
     cursor_color = RED
 
     def handle_event(self, event):
+        config.DIRTY_RECTS += [self.squares[self.cursor[0]][self.cursor[1]].rect]
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
@@ -38,15 +39,17 @@ class Macro(state.State):
             if event.button == 1:
                 mousex, mousey = event.pos
                 x = mousex / self.BOXSIDE
-                y = mousey / self.BOXSIDE
+                y = mousey / self.BOXSIDE                
                 self.cursor = (x,y)
+        config.DIRTY_RECTS += [self.squares[self.cursor[0]][self.cursor[1]].rect]
 
     def update(self):
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 square = self.squares[x][y]
                 if square.unit != None:
-                    square.unit.update()
+                    if square.unit.update():
+                        config.DIRTY_RECTS += [square.rect]
         self.draw_board()
 
     def getTerrain(self, x, y):
@@ -79,6 +82,8 @@ class Macro(state.State):
         self.squares[0][0].unit = units.Unit(units.Attributes.Melee)
         self.squares[1][0].unit = units.Unit(units.Attributes.Arcane)
         self.squares[2][0].unit = units.Unit(units.Attributes.Divine)
+        self.update()
+        pygame.display.update()
 
     def draw_board(self):
         for x in range(self.XBOXES):
