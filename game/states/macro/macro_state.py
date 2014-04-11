@@ -43,6 +43,20 @@ class Macro(state.State):
                     if square.unit is not None:
                         self.selected = square.unit
                         self.cursor_color = CYAN
+                        boxCosts = []
+                        column = []
+                        boxPaths = []
+                        column2 = []
+                        for x in range(self.XBOXES):
+                            for y in range(self.YBOXES):
+                                self.squares[x][y].mask = None
+                                column.append(-1)
+                                column2.append("")
+                            boxCosts.append(column)
+                            boxPaths.append(column2)
+                            column = []
+                            column2 = []
+                        self.dijkstra(square, self.selected.stats["move"], boxCosts, boxPaths, "")
                 else:
                     self.selected = None
                     self.cursor_color = RED
@@ -114,38 +128,37 @@ class Macro(state.State):
         for y in range(self.BOXSIDE, self.WINDOWHEIGHT, self.BOXSIDE):
             pygame.draw.line(config.DISPLAY, BLACK, (0, y), (self.WINDOWWIDTH, y))
 
-    def validDijk(self, x, y, newx, newy, grid, weight, boxCosts, charType):
+    def validDijk(self, x, y, newx, newy, grid, weight, boxCosts):
         XBOXES = self.XBOXES
         YBOXES = self.YBOXES
+        grid = self.squares
         if newx < 0 or newx >= XBOXES:
             return False
         if newy < 0 or newy >= YBOXES:
             return False
-        if grid[newx][newy].impass == True:
+        if grid[newx][newy].terrain.impass == True:
             grid[newx][newy].mask = RED
             return False
-        if weight - grid[newx][newy].weight <= boxCosts[newx][newy]:
-            if weight - grid[newx][newy].weight < 0 and grid[newx][newy].mask != BLUE and grid[x][y].contains == None:
+        if weight - grid[newx][newy].terrain.weight <= boxCosts[newx][newy]:
+            if weight - grid[newx][newy].terrain.weight < 0 and grid[newx][newy].mask != BLUE and grid[x][y].unit == None:
                 grid[newx][newy].mask = RED
-            return False
-        if not (grid[newx][newy].contains == None or grid[newx][newy].contains.charType == charType):
-            grid[newx][newy].mask = RED
             return False
         return True
 
-    def dijkstra(self, current, grid, weight, boxCosts, boxPaths, path, charType):
-        x, y = getBoxCoords(current.rect)
+    def dijkstra(self, current, weight, boxCosts, boxPaths, path):
+        grid = self.squares
+        x, y = current.x, current.y
         boxCosts[x][y] = weight
         boxPaths[x][y] = path
         toSearch = []
-        if validDijk(x, y, x-1, y, grid, weight, boxCosts, charType):
-            toSearch.append((grid[x-1][y], grid[x-1][y].weight, 'l'))
-        if validDijk(x, y, x+1, y, grid, weight, boxCosts, charType):
-            toSearch.append((grid[x+1][y], grid[x+1][y].weight, 'r'))
-        if validDijk(x, y, x, y-1, grid, weight, boxCosts, charType):
-            toSearch.append((grid[x][y-1], grid[x][y-1].weight, 'u'))
-        if validDijk(x, y, x, y+1, grid, weight, boxCosts, charType):
-            toSearch.append((grid[x][y+1], grid[x][y+1].weight, 'd'))
+        if self.validDijk(x, y, x-1, y, grid, weight, boxCosts):
+            toSearch.append((grid[x-1][y], grid[x-1][y].terrain.weight, 'l'))
+        if self.validDijk(x, y, x+1, y, grid, weight, boxCosts):
+            toSearch.append((grid[x+1][y], grid[x+1][y].terrain.weight, 'r'))
+        if self.validDijk(x, y, x, y-1, grid, weight, boxCosts):
+            toSearch.append((grid[x][y-1], grid[x][y-1].terrain.weight, 'u'))
+        if self.validDijk(x, y, x, y+1, grid, weight, boxCosts):
+            toSearch.append((grid[x][y+1], grid[x][y+1].terrain.weight, 'd'))
         for z in toSearch:
-            dijkstra(z[0], grid, weight-z[1], boxCosts, boxPaths, path+z[2], charType)
+            self.dijkstra(z[0], weight-z[1], boxCosts, boxPaths, path+z[2])
         current.mask = BLUE
