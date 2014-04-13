@@ -1,8 +1,10 @@
 import pygame
 import config
 import time
+import random
+from images import images
 
-class Attributes:
+class Attributes():
     Melee = "Melee"
     Ranged = "Ranged"
     Arcane = "Arcane"
@@ -14,23 +16,21 @@ class Unit():
     last_update = time.clock()*1000
     stats = {"move":7}
 
-    def __init__(self, primary_attribute):
-        self.skills[primary_attribute] = 1
-        self.primary_attribute = primary_attribute
-        self.pics = {}
-        self.pics["Melee"] = [pygame.image.load('lib/graphics/SmallSword.png'),
-                              pygame.image.load('lib/graphics/SmallSwordAnim.png')]
-
-        self.pics["Ranged"] = [pygame.image.load('lib/graphics/Ranged.png'),
-                               pygame.image.load('lib/graphics/RangedAnim.png')]
-
-        self.pics["Arcane"] = [pygame.image.load('lib/graphics/ArcaneMage.png'),
-                               pygame.image.load('lib/graphics/ArcaneMageAnim.png')]
-
-        self.pics["Divine"] = [pygame.image.load('lib/graphics/DivineMage.png'),
-                               pygame.image.load('lib/graphics/DivineMageAnim.png')]
-
-        self.pic = self.pics[self.primary_attribute][0]
+    def __init__(self, skills):
+        if skills == None:
+            self.pics = images.units["Rogue"]
+        else:
+            best_skills = ["Melee", "Ranged", "Arcane", "Divine"]
+            for skill in skills:
+                best_skills = list(filter(lambda x: skills[x] >= skills[skill], best_skills))
+            if len(best_skills) == 4:
+                self.primary_attribute = None
+                self.pics = images.units["Rogue"]
+            else:
+                self.primary_attribute = random.choice(best_skills)
+                self.pics = images.units[self.primary_attribute]
+            self.skills = skills
+        self.pic = self.pics[0]
         self.pic_index = 0
 
     def update(self):
@@ -41,6 +41,6 @@ class Unit():
                 self.pic_index = 1
             elif self.pic_index == 1:
                 self.pic_index = 0
-            self.pic = self.pics[self.primary_attribute][self.pic_index]
+            self.pic = self.pics[self.pic_index]
             return True
         return False
