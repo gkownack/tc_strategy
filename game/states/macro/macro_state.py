@@ -4,13 +4,14 @@ import macro_classes
 import random
 from states import state
 from units import units
+from terrain import terrain
 from pygame.locals import *
 from lib.graphics.colors import *
 
 class Macro(state.State):
     BOXSIDE = 48
-    WINDOWWIDTH = 28*BOXSIDE
-    WINDOWHEIGHT = 16*BOXSIDE
+    WINDOWWIDTH = 27*BOXSIDE
+    WINDOWHEIGHT = 15*BOXSIDE
     assert (WINDOWWIDTH%BOXSIDE == 0 and WINDOWHEIGHT%BOXSIDE == 0)
     XBOXES = WINDOWWIDTH/BOXSIDE
     YBOXES = (WINDOWHEIGHT)/BOXSIDE
@@ -23,6 +24,7 @@ class Macro(state.State):
     mask.set_alpha(80)
     boxCosts = []
     boxPaths = []
+    world = []
 
     def handle_event(self, event):
         if event.type == QUIT:
@@ -83,16 +85,7 @@ class Macro(state.State):
         self.draw_board()
 
     def getTerrain(self, x, y):
-        random.seed((x,y))
-        t = random.randint(0,6)
-        if t == 0 or t == 1 or t == 2:
-            return macro_classes.Macro_Grass
-        elif t == 3 or t == 4:
-            return macro_classes.Macro_Tree
-        elif t == 5:
-            return macro_classes.Macro_Water
-        else:
-            return macro_classes.Macro_Mountain
+	return self.world[y][x]
 
     def init(self):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
@@ -100,6 +93,7 @@ class Macro(state.State):
         config.DISPLAY.fill(WHITE)
         self.squares = []
         column = []
+	self.world = terrain.terrain().generate_terrain(self.XBOXES,self.YBOXES)
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),

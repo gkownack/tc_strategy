@@ -8,9 +8,9 @@ from pygame.locals import *
 from lib.graphics.colors import *
 
 class Micro(state.State):
-    WINDOWWIDTH = 1512
-    WINDOWHEIGHT = 864
     BOXSIDE = 72
+    WINDOWWIDTH = 18*BOXSIDE
+    WINDOWHEIGHT = 10*BOXSIDE
     assert (WINDOWWIDTH%BOXSIDE == 0 and WINDOWHEIGHT%BOXSIDE == 0)
     XBOXES = WINDOWWIDTH/BOXSIDE
     YBOXES = (WINDOWHEIGHT)/BOXSIDE
