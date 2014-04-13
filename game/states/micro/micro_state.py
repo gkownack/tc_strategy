@@ -1,16 +1,16 @@
 import pygame, sys
 import config
-import macro_classes
+import micro_classes
 import random
 from states import state
 from units import units
 from pygame.locals import *
 from lib.graphics.colors import *
 
-class Macro(state.State):
-    BOXSIDE = 48
-    WINDOWWIDTH = 28*BOXSIDE
-    WINDOWHEIGHT = 16*BOXSIDE
+class Micro(state.State):
+    WINDOWWIDTH = 1512
+    WINDOWHEIGHT = 864
+    BOXSIDE = 72
     assert (WINDOWWIDTH%BOXSIDE == 0 and WINDOWHEIGHT%BOXSIDE == 0)
     XBOXES = WINDOWWIDTH/BOXSIDE
     YBOXES = (WINDOWHEIGHT)/BOXSIDE
@@ -60,7 +60,7 @@ class Macro(state.State):
                         self.selected = square
                         self.run_dijkstra()
             elif event.key == K_SPACE:
-                config.STATE = config.MICRO
+                config.STATE = config.MACRO
                 config.STATE.update()
                 pygame.display.update()
             if self.selected is None:
@@ -73,7 +73,7 @@ class Macro(state.State):
                 self.cursor = (x,y)
 
     def update(self):
-        pygame.display.set_caption("Macro")
+        pygame.display.set_caption("Micro")
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 square = self.squares[x][y]
@@ -86,23 +86,23 @@ class Macro(state.State):
         random.seed((x,y))
         t = random.randint(0,6)
         if t == 0 or t == 1 or t == 2:
-            return macro_classes.Macro_Grass
+            return micro_classes.Micro_Grass
         elif t == 3 or t == 4:
-            return macro_classes.Macro_Tree
+            return micro_classes.Micro_Tree
         elif t == 5:
-            return macro_classes.Macro_Water
+            return micro_classes.Micro_Water
         else:
-            return macro_classes.Macro_Mountain
+            return micro_classes.Micro_Mountain
 
     def init(self):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
-        pygame.display.set_caption("Macro")
+        pygame.display.set_caption("Micro")
         config.DISPLAY.fill(WHITE)
         self.squares = []
         column = []
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
-                column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
+                column.append(micro_classes.Micro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
                                                          x, y, self.getTerrain(x,y)))
             self.squares.append(column)
             column = []
@@ -112,7 +112,7 @@ class Macro(state.State):
         self.squares[0][0].unit = units.Unit(units.Attributes.Melee)
         self.squares[1][0].unit = units.Unit(units.Attributes.Arcane)
         self.squares[2][0].unit = units.Unit(units.Attributes.Divine)
-	self.squares[3][0].unit = units.Unit(units.Attributes.Ranged)
+        self.squares[3][0].unit = units.Unit(units.Attributes.Ranged)
         self.update()
         self.run_dijkstra()
         pygame.display.update()
