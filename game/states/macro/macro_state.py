@@ -1,6 +1,7 @@
 import pygame, sys
 import config
 import macro_classes
+import terrain_gen
 import random
 from states import state
 from units import units
@@ -9,8 +10,8 @@ from lib.graphics.colors import *
 
 class Macro(state.State):
     BOXSIDE = 48
-    WINDOWWIDTH = 28*BOXSIDE
-    WINDOWHEIGHT = 16*BOXSIDE
+    WINDOWWIDTH = 27*BOXSIDE
+    WINDOWHEIGHT = 15*BOXSIDE
     assert (WINDOWWIDTH%BOXSIDE == 0 and WINDOWHEIGHT%BOXSIDE == 0)
     XBOXES = WINDOWWIDTH/BOXSIDE
     YBOXES = (WINDOWHEIGHT)/BOXSIDE
@@ -23,6 +24,7 @@ class Macro(state.State):
     mask.set_alpha(80)
     boxCosts = []
     boxPaths = []
+    terrain = []
 
     def handle_event(self, event):
         if event.type == QUIT:
@@ -100,6 +102,7 @@ class Macro(state.State):
         config.DISPLAY.fill(WHITE)
         self.squares = []
         column = []
+	self.terrain = terrain_gen.generate_terrain(self.XBOXES,self.YBOXES)
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
