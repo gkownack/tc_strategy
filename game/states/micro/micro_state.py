@@ -3,6 +3,8 @@ import config
 import micro_classes
 import random
 from states import state
+from terrain import terrain_classes
+from terrain import terrain
 from units import units
 from pygame.locals import *
 from lib.graphics.colors import *
@@ -23,6 +25,7 @@ class Micro(state.State):
     mask.set_alpha(80)
     boxCosts = []
     boxPaths = []
+    world = []
 
     def handle_event(self, event):
         if event.type == QUIT:
@@ -83,23 +86,15 @@ class Micro(state.State):
         self.draw_board()
 
     def getTerrain(self, x, y):
-        random.seed((x,y))
-        t = random.randint(0,6)
-        if t == 0 or t == 1 or t == 2:
-            return micro_classes.Micro_Grass
-        elif t == 3 or t == 4:
-            return micro_classes.Micro_Tree
-        elif t == 5:
-            return micro_classes.Micro_Water
-        else:
-            return micro_classes.Micro_Mountain
+	return self.world[y][x]
 
-    def init(self):
+    def init(self, primary_terrain=terrain_classes.Grass):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
         pygame.display.set_caption("Micro")
         config.DISPLAY.fill(WHITE)
         self.squares = []
         column = []
+	self.world = terrain.terrain().generate_terrain(self.XBOXES,self.YBOXES, primary_terrain)
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 column.append(micro_classes.Micro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
