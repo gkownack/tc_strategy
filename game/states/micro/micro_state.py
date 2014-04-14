@@ -171,7 +171,7 @@ class Micro(state.State):
         self.squares[4][0].unit = units.Unit({"Melee": 0, "Ranged":1, "Arcane":1, "Divine":0})
         self.squares[5][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":1, "Divine":0})
         self.squares[6][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":2, "Divine":2})
-        self.squares[7][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":1})
+        self.squares[7][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":100})
         self.squares[8][0].unit = units.Unit({"Melee": 2, "Ranged":0, "Arcane":2, "Divine":2})
         self.squares[9][0].unit = units.Unit({"Melee": 1, "Ranged":1, "Arcane":1, "Divine":1})
         self.update()

@@ -29,6 +29,10 @@ class Unit():
         self.uses = {skill:0 for skill in Attributes.skill_names}
         self.team = team
         self.skills = skills
+        total_skills = 0
+        for k in self.skills:
+            total_skills += self.skills[k]
+        self.level = max([0,(total_skills / 5) - 1])
         self.level_up()
         self.pic = self.pics[0]
         self.pic_index = 0
@@ -65,6 +69,7 @@ class Unit():
             elif self.skills[skill] == best_skill_val:
                 best_skill.append(skill)
 
+        # Determine best skill and picture
         best_skills = ["Melee", "Ranged", "Arcane", "Divine"]
         for skill in self.skills:
             best_skills = list(filter(lambda x: self.skills[x] >= self.skills[skill], best_skills))
@@ -76,18 +81,6 @@ class Unit():
         else:
             self.primary_attribute = random.choice(best_skills)
             self.pics = images.units[self.primary_attribute]
-
-        if len(best_skill) == 4:
-            self.primary_attribute == None
-            self.pics = images.units["Rogue"]
-        elif self.primary_attribute is not None and self.skills[self.primary_attribute] != best_skill_val:
-            self.primary_attribute = random.chaice(best_skill)
-            self.pics = images.units[self.primary_attribute]
-        else:
-            if self.primary_attribute is None:
-                self.pics = images.units["Rogue"]
-            else:
-                self.pics = images.units[self.primary_attribute]
 
         # Update secondary stats
         self.stats["phys_def"] = (self.skills["Melee"] + self.skills["Ranged"])/3
@@ -112,7 +105,7 @@ class Unit():
             self.stats["cur_hp"] = min([self.stats["cur_hp"], self.stats["max_hp"]])
 
     def attack(self, target, attack_type):
-        self.uses[attack_type] += 1
+        self.uses[attack_type] += target.level
         if self.uses[attack_type] > self.level*self.level*5:
             self.uses[attack_type] = 0
             self.level_ups[attack_type] += 1
@@ -128,6 +121,10 @@ class Unit():
             self.level_up()
 
     def __str__(self):
-       return ("Melee: %d\tRanged: %d\tArcane: %d\tDivine: %d\nLevel: %d\tMax HP: %d\tCur HP: %d\n" %
-               (self.skills["Melee"], self.skills["Ranged"], self.skills["Arcane"], self.skills["Divine"],
-                self.level, self.stats["max_hp"], self.stats["cur_hp"]))
+       line_1 = ("Level: %d\tMax HP: %d\tCur HP: %d\n" %
+                 (self.level, self.stats["max_hp"], self.stats["cur_hp"]))
+       line_2 = ("Melee: %d\tRanged: %d\tArcane: %d\tDivine: %d\n" % 
+                 (self.skills["Melee"], self.skills["Ranged"], self.skills["Arcane"], self.skills["Divine"]))
+       line_3 = ("Phys D: %d\tMag D: %d\tLuck: %d\n" %
+                 (self.stats["phys_def"], self.stats["mag_def"], self.stats["luck"]))
+       return line_1 + line_2 + line_3
