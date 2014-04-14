@@ -34,3 +34,6 @@ class Micro_Square():
 
     def set_unit(self, unit):
         self.unit = unit
+
+def distance(first, second):
+    return abs(first.x - second.x) + abs(first.y - second.y)

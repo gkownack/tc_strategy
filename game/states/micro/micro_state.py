@@ -20,7 +20,7 @@ class Micro(state.State):
     cursor = None
     cursor_color = RED
     cursor_rect = None
-    selected = None
+    selected = None # Tells you which tile is selected, None otherwise
     mask = pygame.Surface((BOXSIDE,BOXSIDE))
     mask.set_alpha(80)
     boxCosts = []
@@ -62,6 +62,66 @@ class Micro(state.State):
                     elif square.unit is not None and self.selected is not None:
                         self.selected = square
                         self.run_dijkstra()
+            elif event.key == K_1:
+                # Melee attack
+                if self.selected is not None:
+                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
+                    target = targ_square.unit
+                    # Melee can only attack adjacent squares
+                    if target is not None and micro_classes.distance(self.selected, targ_square) == 1:
+                        self.selected.unit.attack(target, units.Attributes.Melee)
+                        if target.is_dead():
+                            targ_square.unit = None
+                            config.DIRTY_RECTS += [targ_square]
+                        print "Attacker"
+                        print self.selected.unit
+                        print "Defender"
+                        print target
+            elif event.key == K_2:
+                # Ranged attack
+                if self.selected is not None:
+                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
+                    target = targ_square.unit
+                    # Ranged can attack 2 or 3 squares away
+                    if target is not None and micro_classes.distance(self.selected, targ_square) > 1 and micro_classes.distance(self.selected, targ_square) < 4:
+                        self.selected.unit.attack(target, units.Attributes.Ranged)
+                        if target.is_dead():
+                            targ_square.unit = None
+                            config.DIRTY_RECTS += [targ_square]
+                        print "Attacker"
+                        print self.selected.unit
+                        print "Defender"
+                        print target
+            elif event.key == K_3:
+                # Arcane attack
+                if self.selected is not None:
+                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
+                    target = targ_square.unit
+                    # Arcane can attack 1 or 2 squares away
+                    if target is not None and micro_classes.distance(self.selected, targ_square) > 0 and micro_classes.distance(self.selected, targ_square) < 3:
+                        self.selected.unit.attack(target, units.Attributes.Arcane)
+                        if target.is_dead():
+                            targ_square.unit = None
+                            config.DIRTY_RECTS += [targ_square]
+                        print "Attacker"
+                        print self.selected.unit
+                        print "Defender"
+                        print target
+            elif event.key == K_4:
+                # Divine intervention
+                if self.selected is not None:
+                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
+                    target = targ_square.unit
+                    # Divine can be used 0 or 1 spaces away
+                    if target is not None and micro_classes.distance(self.selected, targ_square) <= 1:
+                        self.selected.unit.attack(target, units.Attributes.Divine)
+                        if target.is_dead():
+                            targ_square.unit = None
+                            config.DIRTY_RECTS += [targ_square]
+                        print "Attacker"
+                        print self.selected.unit
+                        print "Defender"
+                        print target
             elif event.key == K_SPACE:
                 config.STATE = config.MACRO
                 config.STATE.update()
