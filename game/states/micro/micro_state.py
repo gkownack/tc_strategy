@@ -184,7 +184,7 @@ class Micro(state.State):
                 square = self.squares[x][y]
                 config.DISPLAY.blit(square.terrain.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
                 if square.unit != None:
-                    config.DISPLAY.blit(square.unit.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                    config.DISPLAY.blit(square.unit.micro_pic, (x*self.BOXSIDE, y*self.BOXSIDE))
                 if square.mask != None:
                     self.mask.fill(square.mask)
                     config.DISPLAY.blit(self.mask, square.rect.topleft)

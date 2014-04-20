@@ -18,7 +18,7 @@ class Unit():
     team = 0
     level = 0
     upgrades = 0
-    primary_attribute = team = pics = pic = pic_index = None
+    primary_attribute = team = pics = macro_pic = micro_pic = pic_index = None
     last_update = time.clock()*1000
     stats = {} # Initialized to include fields: "move", "max_hp", "cur_hp", "luck", "phys_def", "mag_def"
 
@@ -34,7 +34,8 @@ class Unit():
             total_skills += self.skills[k]
         self.level = max([0,(total_skills / 5) - 1])
         self.level_up()
-        self.pic = self.pics[0]
+        self.macro_pic = self.pics.macro[0]
+        self.micro_pic = self.pics.micro[0]
         self.pic_index = 0
 
     def update(self):
@@ -45,7 +46,8 @@ class Unit():
                 self.pic_index = 1
             elif self.pic_index == 1:
                 self.pic_index = 0
-            self.pic = self.pics[self.pic_index]
+            self.macro_pic = self.pics.macro[self.pic_index]
+            self.micro_pic = self.pics.micro[self.pic_index]
             return True
         return False
 
