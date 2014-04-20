@@ -11,6 +11,16 @@ class Attributes():
     Divine = "Divine"
     skill_names = [Melee, Ranged, Arcane, Divine]
 
+class Squad():
+    units = []
+
+    def __init__(self, units):
+        self.units = units
+
+    def update(self):
+        for unit in self.units:
+            unit.update()
+
 class Unit():
     skills = {} # Initialized to have a skill for each map
     uses = {} # Number of times each skill has been used

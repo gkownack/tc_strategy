@@ -85,7 +85,7 @@ class Macro(state.State):
         self.draw_board()
 
     def getTerrain(self, x, y):
-	return self.world[y][x]
+        return self.world[y][x]
 
     def init(self):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
@@ -93,7 +93,7 @@ class Macro(state.State):
         config.DISPLAY.fill(WHITE)
         self.squares = []
         column = []
-	self.world = terrain.terrain().generate_terrain(self.XBOXES,self.YBOXES)
+        self.world = terrain.terrain().generate_terrain(self.XBOXES,self.YBOXES)
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
