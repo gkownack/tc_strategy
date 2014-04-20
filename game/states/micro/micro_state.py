@@ -77,17 +77,13 @@ class Micro(state.State):
                 self.manageAttack(units.Attributes.Melee)
             elif event.key == K_2:
                 # Ranged attack
-                self.manageAttack(units.Attributes.Melee)
-
-                if self.selected is not None and self.selected.unit.can_attack:
-                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
-                    target = targ_square.unit
+                self.manageAttack(units.Attributes.Ranged)
             elif event.key == K_3:
                 # Arcane attack
-                self.manageAttack(units.Attributes.Melee)
+                self.manageAttack(units.Attributes.Arcane)
             elif event.key == K_4:
                 # Divine intervention
-                self.manageAttack(units.Attributes.Melee)
+                self.manageAttack(units.Attributes.Divine)
             elif event.key == K_SPACE:
                 config.STATE = config.MACRO
                 config.STATE.update()
@@ -97,7 +93,7 @@ class Micro(state.State):
 
             if self.selected is None:
                 self.run_dijkstra()
-            print self.squares[self.cursor[0]][self.cursor[1]]
+            self.printCurrent()
         elif event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 mousex, mousey = event.pos
@@ -320,3 +316,6 @@ class Micro(state.State):
         config.DIRTY_RECTS += [self.squares[self.cursor[0]][self.cursor[1]], self.selected]
         self.selected = None
         self.cursor_color = RED
+
+    def printCurrent(self):
+        print self.squares[self.cursor[0]][self.cursor[1]]
