@@ -69,68 +69,20 @@ class Micro(state.State):
                         self.run_dijkstra()
             elif event.key == K_1:
                 # Melee attack
-                if self.selected is not None and self.selected.unit.can_attack:
-                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
-                    target = targ_square.unit
-                    # Melee can only attack adjacent squares
-                    if target is not None and micro_classes.distance(self.selected, targ_square) == 1:
-                        self.selected.unit.can_attack = False
-                        self.selected.unit.attack(target, units.Attributes.Melee)
-                        if target.is_dead():
-                            targ_square.unit = None
-                            config.DIRTY_RECTS += [targ_square]
-                        print "Attacker"
-                        print self.selected.unit
-                        print "Defender"
-                        print target
+                self.manageAttack(units.Attributes.Melee)
             elif event.key == K_2:
                 # Ranged attack
+                self.manageAttack(units.Attributes.Melee)
+
                 if self.selected is not None and self.selected.unit.can_attack:
                     targ_square = self.squares[self.cursor[0]][self.cursor[1]]
                     target = targ_square.unit
-                    # Ranged can attack 2 or 3 squares away
-                    if target is not None and micro_classes.distance(self.selected, targ_square) > 1 and micro_classes.distance(self.selected, targ_square) < 4:
-                        self.selected.unit.can_attack = False
-                        self.selected.unit.attack(target, units.Attributes.Ranged)
-                        if target.is_dead():
-                            targ_square.unit = None
-                            config.DIRTY_RECTS += [targ_square]
-                        print "Attacker"
-                        print self.selected.unit
-                        print "Defender"
-                        print target
             elif event.key == K_3:
                 # Arcane attack
-                if self.selected is not None and self.selected.unit.can_attack:
-                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
-                    target = targ_square.unit
-                    # Arcane can attack 1 or 2 squares away
-                    if target is not None and micro_classes.distance(self.selected, targ_square) > 0 and micro_classes.distance(self.selected, targ_square) < 3:
-                        self.selected.unit.can_attack = False
-                        self.selected.unit.attack(target, units.Attributes.Arcane)
-                        if target.is_dead():
-                            targ_square.unit = None
-                            config.DIRTY_RECTS += [targ_square]
-                        print "Attacker"
-                        print self.selected.unit
-                        print "Defender"
-                        print target
+                self.manageAttack(units.Attributes.Melee)
             elif event.key == K_4:
                 # Divine intervention
-                if self.selected is not None and self.selected.unit.can_attack:
-                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
-                    target = targ_square.unit
-                    # Divine can be used 0 or 1 spaces away
-                    if target is not None and micro_classes.distance(self.selected, targ_square) <= 1:
-                        self.selected.unit.can_attack = False
-                        self.selected.unit.attack(target, units.Attributes.Divine)
-                        if target.is_dead():
-                            targ_square.unit = None
-                            config.DIRTY_RECTS += [targ_square]
-                        print "Attacker"
-                        print self.selected.unit
-                        print "Defender"
-                        print target
+                self.manageAttack(units.Attributes.Melee)
             elif event.key == K_SPACE:
                 config.STATE = config.MACRO
                 config.STATE.update()
@@ -175,11 +127,11 @@ class Micro(state.State):
         self.cursor = (0,0)
 
         # for testing sprites:
-        self.squares[0][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":0}, 0)
-        self.squares[1][0].unit = units.Unit({"Melee": 1, "Ranged":0, "Arcane":0, "Divine":0}, 0)
-        self.squares[2][0].unit = units.Unit({"Melee": 1, "Ranged":1, "Arcane":0, "Divine":0}, 0)
-        self.squares[3][0].unit = units.Unit({"Melee": 1, "Ranged":2, "Arcane":0, "Divine":0}, 0)
-        self.squares[4][0].unit = units.Unit({"Melee": 0, "Ranged":1, "Arcane":1, "Divine":0}, 0)
+        self.squares[0][0].unit = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 0)
+        self.squares[1][0].unit = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 0)
+        self.squares[2][0].unit = units.Unit({"Melee": 1000, "Ranged":1, "Arcane":0, "Divine":0}, 0)
+        self.squares[3][0].unit = units.Unit({"Melee": 1000, "Ranged":2, "Arcane":0, "Divine":0}, 0)
+        self.squares[4][0].unit = units.Unit({"Melee": 1000, "Ranged":1, "Arcane":1, "Divine":0}, 0)
         self.squares[5][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":1, "Divine":0}, 1)
         self.squares[6][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":2, "Divine":2}, 1)
         self.squares[7][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":100}, 1)
@@ -317,3 +269,36 @@ class Micro(state.State):
             u.can_move = True
             u.can_attack = True
         self.selected = None
+        print "Current Turn: ", self.current_team
+
+    def manageAttack(self, attack_type):
+        if attack_type == units.Attributes.Melee:
+            minDist = 1
+            maxDist = 1
+        elif attack_type == units.Attributes.Ranged:
+            minDist = 2
+            maxDist = 3
+        elif attack_type == units.Attributes.Arcane:
+            minDist = 1
+            maxDist = 2
+        else: # Divine
+            minDist = 0
+            maxdist = 1
+
+        if self.selected is not None and self.selected.unit.can_attack:
+            targ_square = self.squares[self.cursor[0]][self.cursor[1]]
+            target = targ_square.unit
+            if target is not None and micro_classes.distance(self.selected, targ_square) >= minDist and micro_classes.distance(self.selected, targ_square) <= maxDist:
+                self.selected.unit.can_attack = False
+                self.selected.unit.attack(target, attack_type)
+                if target.is_dead():
+                    targ_square.unit = None
+                    config.DIRTY_RECTS += [targ_square]
+                    self.units[target.team].remove(target)
+                    if len(self.units[target.team]) == 0:
+                        print "Team Destroyed"
+                        self.units.pop(target.team)
+            print "Attacker"
+            print self.selected.unit
+            print "Defender"
+            print target
