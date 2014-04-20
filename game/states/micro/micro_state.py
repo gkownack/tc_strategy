@@ -28,6 +28,7 @@ class Micro(state.State):
     world = []
     units = {}
     current_team = -1
+    textBox = pygame.Surface((800, 30))
 
     def handle_event(self, event):
         if event.type == QUIT:
@@ -145,6 +146,8 @@ class Micro(state.State):
         self.nextTurn()
         self.update()
         self.run_dijkstra()
+
+        self.textBox.fill((0,0,0))
         pygame.display.update()
 
     def draw_board(self):
@@ -318,4 +321,10 @@ class Micro(state.State):
         self.cursor_color = RED
 
     def printCurrent(self):
+        textFont = pygame.font.SysFont("", 10)
+        text = textFont.render(str(self.squares[self.cursor[0]][self.cursor[1]]), False, (255,255,255))
+        self.textBox.blit(text, (5,5))
+        bs = config.DISPLAY.blit(self.textBox, (0,0))
+        config.DIRTY_RECTS.append(bs)
+        
         print self.squares[self.cursor[0]][self.cursor[1]]
