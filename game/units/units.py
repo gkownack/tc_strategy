@@ -21,6 +21,8 @@ class Unit():
     primary_attribute = team = pics = macro_pic = micro_pic = pic_index = None
     last_update = time.clock()*1000
     stats = {} # Initialized to include fields: "move", "max_hp", "cur_hp", "luck", "phys_def", "mag_def"
+    can_move = False
+    can_attack = False
 
     def __init__(self, skills={"Melee":4,"Ranged":4,"Arcane":4,"Divine":4}, team=0):
         self.skills = skills.copy()
@@ -37,6 +39,8 @@ class Unit():
         self.macro_pic = self.pics.macro[0]
         self.micro_pic = self.pics.micro[0]
         self.pic_index = 0
+        self.can_move = False
+        self.can_attack = False
 
     def update(self):
         now = time.clock()*1000

@@ -26,6 +26,8 @@ class Micro(state.State):
     boxCosts = []
     boxPaths = []
     world = []
+    units = {}
+    current_team = -1
 
     def handle_event(self, event):
         if event.type == QUIT:
@@ -47,28 +49,32 @@ class Micro(state.State):
             elif event.key == K_RETURN:
                 if self.selected is None:
                     square = self.squares[self.cursor[0]][self.cursor[1]]
-                    if square.unit is not None:
+                    if square.unit is not None and square.unit.team == self.current_team:
                         self.selected = square
                         self.cursor_color = CYAN
                 else:
                     square = self.squares[self.cursor[0]][self.cursor[1]]
-                    if square.mask == BLUE and (square.unit is None or square.unit == self.selected.unit):
-                        square.unit = self.selected.unit
-                        if square != self.selected:
-                            self.selected.unit = None
-                        config.DIRTY_RECTS += [square, self.selected]
-                        self.selected = None
-                        self.cursor_color = RED
+                    if self.selected.unit.can_move:
+                        # Moves the unit
+                        if square.mask == BLUE and (square.unit is None or square.unit == self.selected.unit):
+                            self.selected.unit.can_move = False
+                            square.unit = self.selected.unit
+                            if square != self.selected:
+                                self.selected.unit = None
+                            config.DIRTY_RECTS += [square, self.selected]
+                            self.selected = None
+                            self.cursor_color = RED
                     elif square.unit is not None and self.selected is not None:
                         self.selected = square
                         self.run_dijkstra()
             elif event.key == K_1:
                 # Melee attack
-                if self.selected is not None:
+                if self.selected is not None and self.selected.unit.can_attack:
                     targ_square = self.squares[self.cursor[0]][self.cursor[1]]
                     target = targ_square.unit
                     # Melee can only attack adjacent squares
                     if target is not None and micro_classes.distance(self.selected, targ_square) == 1:
+                        self.selected.unit.can_attack = False
                         self.selected.unit.attack(target, units.Attributes.Melee)
                         if target.is_dead():
                             targ_square.unit = None
@@ -79,11 +85,12 @@ class Micro(state.State):
                         print target
             elif event.key == K_2:
                 # Ranged attack
-                if self.selected is not None:
+                if self.selected is not None and self.selected.unit.can_attack:
                     targ_square = self.squares[self.cursor[0]][self.cursor[1]]
                     target = targ_square.unit
                     # Ranged can attack 2 or 3 squares away
                     if target is not None and micro_classes.distance(self.selected, targ_square) > 1 and micro_classes.distance(self.selected, targ_square) < 4:
+                        self.selected.unit.can_attack = False
                         self.selected.unit.attack(target, units.Attributes.Ranged)
                         if target.is_dead():
                             targ_square.unit = None
@@ -94,11 +101,12 @@ class Micro(state.State):
                         print target
             elif event.key == K_3:
                 # Arcane attack
-                if self.selected is not None:
+                if self.selected is not None and self.selected.unit.can_attack:
                     targ_square = self.squares[self.cursor[0]][self.cursor[1]]
                     target = targ_square.unit
                     # Arcane can attack 1 or 2 squares away
                     if target is not None and micro_classes.distance(self.selected, targ_square) > 0 and micro_classes.distance(self.selected, targ_square) < 3:
+                        self.selected.unit.can_attack = False
                         self.selected.unit.attack(target, units.Attributes.Arcane)
                         if target.is_dead():
                             targ_square.unit = None
@@ -109,11 +117,12 @@ class Micro(state.State):
                         print target
             elif event.key == K_4:
                 # Divine intervention
-                if self.selected is not None:
+                if self.selected is not None and self.selected.unit.can_attack:
                     targ_square = self.squares[self.cursor[0]][self.cursor[1]]
                     target = targ_square.unit
                     # Divine can be used 0 or 1 spaces away
                     if target is not None and micro_classes.distance(self.selected, targ_square) <= 1:
+                        self.selected.unit.can_attack = False
                         self.selected.unit.attack(target, units.Attributes.Divine)
                         if target.is_dead():
                             targ_square.unit = None
@@ -126,6 +135,8 @@ class Micro(state.State):
                 config.STATE = config.MACRO
                 config.STATE.update()
                 pygame.display.update()
+            elif event.key == K_r:
+                self.nextTurn()
             if self.selected is None:
                 self.run_dijkstra()
         elif event.type == MOUSEBUTTONDOWN:
@@ -164,16 +175,19 @@ class Micro(state.State):
         self.cursor = (0,0)
 
         # for testing sprites:
-        self.squares[0][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":0})
-        self.squares[1][0].unit = units.Unit({"Melee": 1, "Ranged":0, "Arcane":0, "Divine":0})
-        self.squares[2][0].unit = units.Unit({"Melee": 1, "Ranged":1, "Arcane":0, "Divine":0})
-        self.squares[3][0].unit = units.Unit({"Melee": 1, "Ranged":2, "Arcane":0, "Divine":0})
-        self.squares[4][0].unit = units.Unit({"Melee": 0, "Ranged":1, "Arcane":1, "Divine":0})
-        self.squares[5][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":1, "Divine":0})
-        self.squares[6][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":2, "Divine":2})
-        self.squares[7][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":100})
-        self.squares[8][0].unit = units.Unit({"Melee": 2, "Ranged":0, "Arcane":2, "Divine":2})
-        self.squares[9][0].unit = units.Unit({"Melee": 1, "Ranged":1, "Arcane":1, "Divine":1})
+        self.squares[0][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":0}, 0)
+        self.squares[1][0].unit = units.Unit({"Melee": 1, "Ranged":0, "Arcane":0, "Divine":0}, 0)
+        self.squares[2][0].unit = units.Unit({"Melee": 1, "Ranged":1, "Arcane":0, "Divine":0}, 0)
+        self.squares[3][0].unit = units.Unit({"Melee": 1, "Ranged":2, "Arcane":0, "Divine":0}, 0)
+        self.squares[4][0].unit = units.Unit({"Melee": 0, "Ranged":1, "Arcane":1, "Divine":0}, 0)
+        self.squares[5][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":1, "Divine":0}, 1)
+        self.squares[6][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":2, "Divine":2}, 1)
+        self.squares[7][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":100}, 1)
+        self.squares[8][0].unit = units.Unit({"Melee": 2, "Ranged":0, "Arcane":2, "Divine":2}, 1)
+        self.squares[9][0].unit = units.Unit({"Melee": 1, "Ranged":1, "Arcane":1, "Divine":1}, 1)
+        self.units[0] = [self.squares[0][0].unit, self.squares[1][0].unit, self.squares[2][0].unit, self.squares[3][0].unit, self.squares[4][0].unit]
+        self.units[1] = [self.squares[5][0].unit, self.squares[6][0].unit, self.squares[7][0].unit, self.squares[8][0].unit, self.squares[9][0].unit]
+        self.nextTurn()
         self.update()
         self.run_dijkstra()
         pygame.display.update()
@@ -292,3 +306,14 @@ class Micro(state.State):
             self.dijkstra(z[0], weight-z[1], boxCosts, boxPaths, path+z[2])
         current.mask = BLUE
         config.DIRTY_RECTS += [current]
+
+    def nextTurn(self):
+        self.current_team += 1
+        while self.current_team not in self.units:
+            self.current_team += 1
+            if self.current_team > max(self.units.keys()):
+                self.current_team = 0
+        for u in self.units[self.current_team]:
+            u.can_move = True
+            u.can_attack = True
+        self.selected = None
