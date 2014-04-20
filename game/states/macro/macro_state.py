@@ -7,6 +7,7 @@ from units import units
 from terrain import terrain
 from pygame.locals import *
 from lib.graphics.colors import *
+from states.micro import micro_state
 
 class Macro(state.State):
     BOXSIDE = config.MACRO_BOXSIDE
@@ -58,6 +59,10 @@ class Macro(state.State):
                         config.DIRTY_RECTS += [square, self.selected]
                         self.selected = None
                         self.cursor_color = RED
+                    elif square.squad is not None and self.selected is not None and self.selected.squad.team != square.squad.team:
+                        micro = micro_state.Micro()
+                        micro.init(self.selected.squad, square.squad)
+                        config.MICRO = micro
                     elif square.squad is not None and self.selected is not None:
                         self.selected = square
                         self.run_dijkstra()
@@ -107,8 +112,13 @@ class Macro(state.State):
         rogue_unit = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":0, "Divine":0}, 0)
         divine_unit = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":0, "Divine":1}, 0)
         arcane_unit = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":4, "Divine":1}, 0)
-        self.squares[0][0].squad = units.Squad([melee_unit, ranged_unit, rogue_unit, divine_unit])
-        self.squares[1][1].squad = units.Squad([arcane_unit, melee_unit, ranged_unit, rogue_unit])
+        melee_unit2 = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 1)
+        ranged_unit2 = units.Unit({"Melee": 0, "Ranged": 10, "Arcane":0, "Divine":0}, 1)
+        rogue_unit2 = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":0, "Divine":0}, 1)
+        divine_unit2 = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":0, "Divine":1}, 1)
+        arcane_unit2 = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":4, "Divine":1}, 1)
+        self.squares[0][0].squad = units.Squad([melee_unit, ranged_unit, rogue_unit, divine_unit],0)
+        self.squares[1][1].squad = units.Squad([arcane_unit2, melee_unit2, ranged_unit2, rogue_unit2],1)
 
 
         self.update()
@@ -203,11 +213,11 @@ class Macro(state.State):
             return False
         config.DIRTY_RECTS += [grid[newx][newy]]
         if grid[newx][newy].terrain.impass == True:
-            grid[newx][newy].mask = RED
+            #grid[newx][newy].mask = RED
             return False
         if weight - grid[newx][newy].terrain.weight <= boxCosts[newx][newy]:
-            if weight - grid[newx][newy].terrain.weight < 0 and grid[newx][newy].mask != BLUE and grid[x][y].squad == None:
-                grid[newx][newy].mask = RED
+            #if weight - grid[newx][newy].terrain.weight < 0 and grid[newx][newy].mask != BLUE and grid[x][y].squad == None:
+                #grid[newx][newy].mask = RED
             return False
         return True
 

@@ -114,7 +114,7 @@ class Micro(state.State):
     def getTerrain(self, x, y):
         return self.world[y][x]
 
-    def init(self, primary_terrain=terrain_classes.Grass):
+    def init(self, squad1, squad2, primary_terrain=terrain_classes.Grass):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
         pygame.display.set_caption("Micro")
         config.DISPLAY.fill(WHITE)
@@ -130,6 +130,7 @@ class Micro(state.State):
         self.cursor = (0,0)
 
         # for testing sprites:
+        """
         self.squares[0][0].unit = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 0)
         self.squares[1][0].unit = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 0)
         self.squares[2][0].unit = units.Unit({"Melee": 1000, "Ranged":1, "Arcane":0, "Divine":0}, 0)
@@ -140,8 +141,16 @@ class Micro(state.State):
         self.squares[7][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":100}, 1)
         self.squares[8][0].unit = units.Unit({"Melee": 2, "Ranged":0, "Arcane":2, "Divine":2}, 1)
         self.squares[9][0].unit = units.Unit({"Melee": 1, "Ranged":1, "Arcane":1, "Divine":1}, 1)
-        self.units[0] = [self.squares[0][0].unit, self.squares[1][0].unit, self.squares[2][0].unit, self.squares[3][0].unit, self.squares[4][0].unit]
-        self.units[1] = [self.squares[5][0].unit, self.squares[6][0].unit, self.squares[7][0].unit, self.squares[8][0].unit, self.squares[9][0].unit]
+        """
+        self.units = {0:[],1:[]}
+        for i in xrange(len(squad1.units)):
+            self.squares[i][0].unit = squad1.units[i]
+            self.units[0].append(squad1.units[i])
+        for j in xrange(len(squad2.units)):
+            self.squares[j][2].unit = squad2.units[j]
+            self.units[1].append(squad2.units[i])
+        #self.units[0] = [self.squares[0][0].unit, self.squares[1][0].unit, self.squares[2][0].unit, self.squares[3][0].unit, self.squares[4][0].unit]
+        #self.units[1] = [self.squares[5][0].unit, self.squares[6][0].unit, self.squares[7][0].unit, self.squares[8][0].unit, self.squares[9][0].unit]
         self.nextTurn()
         self.update()
         self.run_dijkstra()

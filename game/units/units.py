@@ -15,10 +15,12 @@ class Squad():
     HALF_BOXSIDE = config.MACRO_BOXSIDE/2
     pic = pygame.Surface((HALF_BOXSIDE, HALF_BOXSIDE))
     units = []
+    team = 0
     stats = {"move": 8}
 
-    def __init__(self, units):
+    def __init__(self, units, team=0):
         self.units = units
+        self.team = team
 
     def update(self):
         for unit in self.units:
