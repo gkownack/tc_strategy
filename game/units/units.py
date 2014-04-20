@@ -13,20 +13,26 @@ class Attributes():
 
 class Squad():
     HALF_BOXSIDE = config.MACRO_BOXSIDE/2
-    pic = pygame.Surface((HALF_BOXSIDE, HALF_BOXSIDE))
+    pic = None
     units = []
     stats = {"move": 8}
 
     def __init__(self, units):
+        self.pic = pygame.Surface((config.MACRO_BOXSIDE, config.MACRO_BOXSIDE), pygame.SRCALPHA, 32)
         self.units = units
 
     def update(self):
+        dirty = False
         for unit in self.units:
-            unit.update()
+            if(unit.update()):
+                dirty = True
+
         self.pic.blit(self.units[0].macro_pic, (0, 0))
         self.pic.blit(self.units[1].macro_pic, (self.HALF_BOXSIDE, 0))
         self.pic.blit(self.units[2].macro_pic, (0, self.HALF_BOXSIDE))
         self.pic.blit(self.units[3].macro_pic, (self.HALF_BOXSIDE, self.HALF_BOXSIDE))
+
+        return dirty
 
 class Unit():
     skills = {} # Initialized to have a skill for each map
