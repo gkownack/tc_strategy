@@ -12,7 +12,10 @@ class Attributes():
     skill_names = [Melee, Ranged, Arcane, Divine]
 
 class Squad():
+    HALF_BOXSIDE = config.MACRO_BOXSIDE/2
+    pic = pygame.Surface((HALF_BOXSIDE, HALF_BOXSIDE))
     units = []
+    stats = {"move": 8}
 
     def __init__(self, units):
         self.units = units
@@ -20,6 +23,10 @@ class Squad():
     def update(self):
         for unit in self.units:
             unit.update()
+        self.pic.blit(self.units[0].macro_pic, (0, 0))
+        self.pic.blit(self.units[1].macro_pic, (self.HALF_BOXSIDE, 0))
+        self.pic.blit(self.units[2].macro_pic, (0, self.HALF_BOXSIDE))
+        self.pic.blit(self.units[3].macro_pic, (self.HALF_BOXSIDE, self.HALF_BOXSIDE))
 
 class Unit():
     skills = {} # Initialized to have a skill for each map

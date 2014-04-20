@@ -1,10 +1,13 @@
 import pygame, sys
 import config
 from pygame.locals import *
+from states.title import title_state
 
 # Initialization Routines
 pygame.init()
-config.init()
+
+config.STATE = title_state.Title()
+config.STATE.init()
 
 while 1:
     for event in pygame.event.get():

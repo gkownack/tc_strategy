@@ -24,7 +24,7 @@ class Macro_Water(Macro_Terrain):
     impass = True
 
 class Macro_Square():
-    rect = x = y = terrain = unit = mask = None
+    rect = x = y = terrain = squad = mask = None
 
     def __init__(self, rect, x, y, terrain):
         self.rect = rect
@@ -32,5 +32,5 @@ class Macro_Square():
         self.y = y
         self.terrain = terrain
 
-    def set_unit(self, unit):
-        self.unit = unit
+    def set_squad(self, squad):
+        self.squad = squad
