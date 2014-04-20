@@ -38,7 +38,7 @@ class Unit():
     primary_attribute = team = pics = macro_pic = micro_pic = pic_index = None
     last_update = time.clock()*1000
     stats = {} # Initialized to include fields: "move", "max_hp", "cur_hp", "luck", "phys_def", "mag_def"
-    can_move = False
+    moves_left = 0
     can_attack = False
 
     def __init__(self, skills={"Melee":4,"Ranged":4,"Arcane":4,"Divine":4}, team=0):
@@ -56,7 +56,7 @@ class Unit():
         self.macro_pic = self.pics.macro[0]
         self.micro_pic = self.pics.micro[0]
         self.pic_index = 0
-        self.can_move = False
+        self.moves_left = self.stats["move"]
         self.can_attack = False
 
     def update(self):
@@ -144,8 +144,8 @@ class Unit():
             self.level_up()
 
     def __str__(self):
-       line_1 = ("Level: %d\tMax HP: %d\tCur HP: %d\n" %
-                 (self.level, self.stats["max_hp"], self.stats["cur_hp"]))
+       line_1 = ("Team: %d\tLevel: %d\tMax HP: %d\tCur HP: %d\n" %
+                 (self.team, self.level, self.stats["max_hp"], self.stats["cur_hp"]))
        line_2 = ("Melee: %d\tRanged: %d\tArcane: %d\tDivine: %d\n" % 
                  (self.skills["Melee"], self.skills["Ranged"], self.skills["Arcane"], self.skills["Divine"]))
        line_3 = ("Phys D: %d\tMag D: %d\tLuck: %d\n" %

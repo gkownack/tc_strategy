@@ -53,17 +53,22 @@ class Micro(state.State):
                         self.selected = square
                         self.cursor_color = CYAN
                 else:
+                    current_unit = self.selected.unit
                     square = self.squares[self.cursor[0]][self.cursor[1]]
-                    if self.selected.unit.can_move:
+                    if current_unit.moves_left:
                         # Moves the unit
-                        if square.mask == BLUE and (square.unit is None or square.unit == self.selected.unit):
-                            self.selected.unit.can_move = False
+                        if square.mask == BLUE and (square.unit is None or square.unit == current_unit):
+                            current_unit.moves_left = self.boxCosts[self.cursor[0]][self.cursor[1]]
                             square.unit = self.selected.unit
                             if square != self.selected:
                                 self.selected.unit = None
-                            config.DIRTY_RECTS += [square, self.selected]
-                            self.selected = None
-                            self.cursor_color = RED
+                            if not current_unit.can_attack:
+                                self.deselect()
+                            else:
+                                self.selected = square
+                                self.run_dijkstra()
+                        else:
+                            self.deselect()
                     elif square.unit is not None and self.selected is not None:
                         self.selected = square
                         self.run_dijkstra()
@@ -72,25 +77,23 @@ class Micro(state.State):
                 self.manageAttack(units.Attributes.Melee)
             elif event.key == K_2:
                 # Ranged attack
-                self.manageAttack(units.Attributes.Melee)
-
-                if self.selected is not None and self.selected.unit.can_attack:
-                    targ_square = self.squares[self.cursor[0]][self.cursor[1]]
-                    target = targ_square.unit
+                self.manageAttack(units.Attributes.Ranged)
             elif event.key == K_3:
                 # Arcane attack
-                self.manageAttack(units.Attributes.Melee)
+                self.manageAttack(units.Attributes.Arcane)
             elif event.key == K_4:
                 # Divine intervention
-                self.manageAttack(units.Attributes.Melee)
+                self.manageAttack(units.Attributes.Divine)
             elif event.key == K_SPACE:
                 config.STATE = config.MACRO
                 config.STATE.update()
                 pygame.display.update()
             elif event.key == K_r:
                 self.nextTurn()
+
             if self.selected is None:
                 self.run_dijkstra()
+            self.printCurrent()
         elif event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 mousex, mousey = event.pos
@@ -218,7 +221,7 @@ class Micro(state.State):
             column2 = []
         square = self.squares[self.cursor[0]][self.cursor[1]]
         if square.unit is not None:
-            self.dijkstra(square, square.unit.stats["move"], boxCosts, boxPaths, "")
+            self.dijkstra(square, square.unit.moves_left, boxCosts, boxPaths, "")
         self.boxCosts = boxCosts
         self.boxPaths = boxPaths
 
@@ -260,15 +263,18 @@ class Micro(state.State):
         config.DIRTY_RECTS += [current]
 
     def nextTurn(self):
+        if self.current_team in self.units:
+            for u in self.units[self.current_team]:
+                u.moves_left = u.stats["move"]
         self.current_team += 1
         while self.current_team not in self.units:
             self.current_team += 1
             if self.current_team > max(self.units.keys()):
                 self.current_team = 0
         for u in self.units[self.current_team]:
-            u.can_move = True
+            u.moves_left = u.stats["move"]
             u.can_attack = True
-        self.selected = None
+        self.deselect()
         print "Current Turn: ", self.current_team
 
     def manageAttack(self, attack_type):
@@ -286,11 +292,12 @@ class Micro(state.State):
             maxdist = 1
 
         if self.selected is not None and self.selected.unit.can_attack:
+            current_unit = self.selected.unit
             targ_square = self.squares[self.cursor[0]][self.cursor[1]]
             target = targ_square.unit
             if target is not None and micro_classes.distance(self.selected, targ_square) >= minDist and micro_classes.distance(self.selected, targ_square) <= maxDist:
-                self.selected.unit.can_attack = False
-                self.selected.unit.attack(target, attack_type)
+                current_unit.can_attack = False
+                current_unit.attack(target, attack_type)
                 if target.is_dead():
                     targ_square.unit = None
                     config.DIRTY_RECTS += [targ_square]
@@ -298,7 +305,17 @@ class Micro(state.State):
                     if len(self.units[target.team]) == 0:
                         print "Team Destroyed"
                         self.units.pop(target.team)
+                current_unit.moves_left = 0
+                self.deselect()
             print "Attacker"
-            print self.selected.unit
+            print current_unit
             print "Defender"
             print target
+
+    def deselect(self):
+        config.DIRTY_RECTS += [self.squares[self.cursor[0]][self.cursor[1]], self.selected]
+        self.selected = None
+        self.cursor_color = RED
+
+    def printCurrent(self):
+        print self.squares[self.cursor[0]][self.cursor[1]]
