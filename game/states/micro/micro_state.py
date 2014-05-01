@@ -244,9 +244,11 @@ class Micro(state.State):
             return False
         if newy < 0 or newy >= YBOXES:
             return False
-        config.DIRTY_RECTS += [grid[newx][newy]]
-        if grid[newx][newy].terrain.impass == True:
-            grid[newx][newy].mask = RED
+        config.DIRTY_RECTS += [grid[newx][newy].rect]
+        square = self.squares[self.cursor[0]][self.cursor[1]]
+        if grid[newx][newy].terrain.impass == True or (grid[newx][newy].unit is not None and grid[newx][newy].unit.team != square.unit.team):
+            if (grid[x][y].unit is None or grid[x][y].unit is square.unit):
+                grid[newx][newy].mask = RED
             return False
         if weight - grid[newx][newy].terrain.weight <= boxCosts[newx][newy]:
             if weight - grid[newx][newy].terrain.weight < 0 and grid[newx][newy].mask != BLUE and grid[x][y].unit == None:

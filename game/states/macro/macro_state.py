@@ -63,13 +63,15 @@ class Macro(state.State):
                         micro = micro_state.Micro()
                         micro.init(self.selected.squad, square.squad)
                         config.MICRO = micro
+                        config.STATE = config.MICRO
                     elif square.squad is not None and self.selected is not None:
                         self.selected = square
                         self.run_dijkstra()
             elif event.key == K_SPACE:
-                config.STATE = config.MICRO
-                config.STATE.update()
-                pygame.display.update()
+                if config.MICRO is not None:
+                    config.STATE = config.MICRO
+                    config.STATE.update()
+                    pygame.display.update()
             if self.selected is None:
                 self.run_dijkstra()
         elif event.type == MOUSEBUTTONDOWN:
