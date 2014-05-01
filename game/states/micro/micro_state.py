@@ -43,6 +43,8 @@ class Micro(state.State):
                 self.cursor = (self.cursor[0], min(self.YBOXES - 1, self.cursor[1] + 1))
             elif event.key == K_d or event.key == K_RIGHT:
                 self.cursor = (min(self.XBOXES - 1, self.cursor[0] + 1), self.cursor[1])
+            elif event.key == K_t:
+                self.deselect()
             elif event.key == K_ESCAPE:
                 pygame.quit()
                 sys.exit()
@@ -69,7 +71,7 @@ class Micro(state.State):
                                 self.run_dijkstra()
                         else:
                             self.deselect()
-                    elif square.unit is not None and self.selected is not None:
+                    elif square.unit is not None and self.selected is not None and square.unit.team == self.current_team:
                         self.selected = square
                         self.run_dijkstra()
             elif event.key == K_1:
