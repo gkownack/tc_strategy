@@ -4,20 +4,25 @@ file_prefix = 'lib/graphics/'
 file_postfix = '.png'
 
 class UnitImage():
-    macro = micro = None
+    macro = micro = enemy = None
 
-    def __init__(self, unit_file_name):
-        self.macro = [pygame.image.load(file_prefix + 'Squad_' + unit_file_name + file_postfix),
-                      pygame.image.load(file_prefix + 'Squad_' + unit_file_name + 'Anim' + file_postfix)]
-        self.micro = [pygame.image.load(file_prefix + unit_file_name + file_postfix),
-                      pygame.image.load(file_prefix + unit_file_name + 'Anim' + file_postfix)]
+    def __init__(self, unit_file_name, enemy=""):
+        self.macro = [pygame.image.load(file_prefix + 'Squad_' + enemy + unit_file_name + file_postfix),
+                      pygame.image.load(file_prefix + 'Squad_' + enemy + unit_file_name + 'Anim' + file_postfix)]
+        self.micro = [pygame.image.load(file_prefix + enemy + unit_file_name + file_postfix),
+                      pygame.image.load(file_prefix + enemy + unit_file_name + 'Anim' + file_postfix)]
+        self.enemy = enemy
 
 units = {}
-units["Rogue"] = UnitImage('Rogue')
-units["Melee"] = UnitImage('SmallSword')
-units["Ranged"] = UnitImage('Ranged')
-units["Arcane"] = UnitImage('ArcaneMage')
-units["Divine"] = UnitImage('DivineMage')
+enemy = ""
+for i in xrange(2):
+    if i == 1:
+        enemy = "Enemy"
+    units[("Rogue",i)] = UnitImage('Rogue', enemy)
+    units[("Melee",i)] = UnitImage('SmallSword', enemy)
+    units[("Ranged",i)] = UnitImage('Ranged', enemy)
+    units[("Arcane",i)] = UnitImage('ArcaneMage', enemy)
+    units[("Divine",i)] = UnitImage('DivineMage', enemy)
 
 terrain = {}
 terrain["Grass"] = pygame.image.load('lib/graphics/grass.png')

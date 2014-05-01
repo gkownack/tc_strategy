@@ -108,12 +108,12 @@ class Unit():
             best_skills = list(filter(lambda x: self.skills[x] >= self.skills[skill], best_skills))
         if len(best_skills) == 4:
             self.primary_attribute = None
-            self.pics = images.units["Rogue"]
+            self.pics = images.units[("Rogue",self.team)]
         elif self.primary_attribute in best_skills:
-            self.pics = images.units[self.primary_attribute]
+            self.pics = images.units[(self.primary_attribute,self.team)]
         else:
             self.primary_attribute = random.choice(best_skills)
-            self.pics = images.units[self.primary_attribute]
+            self.pics = images.units[(self.primary_attribute,self.team)]
 
         # Update secondary stats
         self.stats["phys_def"] = (self.skills["Melee"] + self.skills["Ranged"])/3
