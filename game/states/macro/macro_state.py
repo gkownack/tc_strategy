@@ -132,6 +132,7 @@ class Macro(state.State):
                 config.DISPLAY.blit(square.terrain.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
                 if square.squad != None:
                     config.DISPLAY.blit(square.squad.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                    config.DIRTY_RECTS.append(square)
                 if square.mask != None:
                     self.mask.fill(square.mask)
                     config.DISPLAY.blit(self.mask, square.rect.topleft)

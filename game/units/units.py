@@ -29,6 +29,8 @@ class Squad():
             if(unit.update()):
                 dirty = True
 
+        self.pic = pygame.Surface((config.MACRO_BOXSIDE, config.MACRO_BOXSIDE), pygame.SRCALPHA, 32)
+
         self.pic.blit(self.units[0].macro_pic, (0, 0))
         self.pic.blit(self.units[1].macro_pic, (self.HALF_BOXSIDE, 0))
         self.pic.blit(self.units[2].macro_pic, (0, self.HALF_BOXSIDE))
