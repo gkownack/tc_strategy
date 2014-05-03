@@ -7,9 +7,10 @@ from units import units
 from terrain import terrain
 from pygame.locals import *
 from lib.graphics.colors import *
+from states.micro import micro_state
 
 class Macro(state.State):
-    BOXSIDE = 48
+    BOXSIDE = config.MACRO_BOXSIDE
     WINDOWWIDTH = 27*BOXSIDE
     WINDOWHEIGHT = 15*BOXSIDE
     assert (WINDOWWIDTH%BOXSIDE == 0 and WINDOWHEIGHT%BOXSIDE == 0)
@@ -46,25 +47,31 @@ class Macro(state.State):
             elif event.key == K_RETURN:
                 if self.selected is None:
                     square = self.squares[self.cursor[0]][self.cursor[1]]
-                    if square.unit is not None:
+                    if square.squad is not None:
                         self.selected = square
                         self.cursor_color = CYAN
                 else:
                     square = self.squares[self.cursor[0]][self.cursor[1]]
-                    if square.mask == BLUE and (square.unit is None or square.unit == self.selected.unit):
-                        square.unit = self.selected.unit
+                    if square.mask == BLUE and (square.squad is None or square.squad == self.selected.squad):
+                        square.squad = self.selected.squad
                         if square != self.selected:
-                            self.selected.unit = None
+                            self.selected.squad = None
                         config.DIRTY_RECTS += [square, self.selected]
                         self.selected = None
                         self.cursor_color = RED
-                    elif square.unit is not None and self.selected is not None:
+                    elif square.squad is not None and self.selected is not None and self.selected.squad.team != square.squad.team:
+                        micro = micro_state.Micro()
+                        micro.init(self.selected.squad, square.squad)
+                        config.MICRO = micro
+                        config.STATE = config.MICRO
+                    elif square.squad is not None and self.selected is not None:
                         self.selected = square
                         self.run_dijkstra()
             elif event.key == K_SPACE:
-                config.STATE = config.MICRO
-                config.STATE.update()
-                pygame.display.update()
+                if config.MICRO is not None:
+                    config.STATE = config.MICRO
+                    config.STATE.update()
+                    pygame.display.update()
             if self.selected is None:
                 self.run_dijkstra()
         elif event.type == MOUSEBUTTONDOWN:
@@ -79,13 +86,13 @@ class Macro(state.State):
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 square = self.squares[x][y]
-                if square.unit != None:
-                    if square.unit.update():
+                if square.squad != None:
+                    if square.squad.update():
                         config.DIRTY_RECTS += [square.rect]
         self.draw_board()
 
     def getTerrain(self, x, y):
-	return self.world[y][x]
+        return self.world[y][x]
 
     def init(self):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
@@ -93,7 +100,7 @@ class Macro(state.State):
         config.DISPLAY.fill(WHITE)
         self.squares = []
         column = []
-	self.world = terrain.terrain().generate_terrain(self.XBOXES,self.YBOXES)
+        self.world = terrain.terrain().generate_terrain(self.XBOXES,self.YBOXES)
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 column.append(macro_classes.Macro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
@@ -101,6 +108,20 @@ class Macro(state.State):
             self.squares.append(column)
             column = []
         self.cursor = (0,0)
+
+        melee_unit = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 0)
+        ranged_unit = units.Unit({"Melee": 0, "Ranged": 10, "Arcane":0, "Divine":0}, 0)
+        rogue_unit = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":0, "Divine":0}, 0)
+        divine_unit = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":0, "Divine":1}, 0)
+        arcane_unit = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":4, "Divine":1}, 0)
+        melee_unit2 = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 1)
+        ranged_unit2 = units.Unit({"Melee": 0, "Ranged": 10, "Arcane":0, "Divine":0}, 1)
+        rogue_unit2 = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":0, "Divine":0}, 1)
+        divine_unit2 = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":0, "Divine":1}, 1)
+        arcane_unit2 = units.Unit({"Melee": 0, "Ranged": 0, "Arcane":4, "Divine":1}, 1)
+        self.squares[0][0].squad = units.Squad([melee_unit, ranged_unit, rogue_unit, divine_unit],0)
+        self.squares[1][1].squad = units.Squad([arcane_unit2, melee_unit2, ranged_unit2, rogue_unit2],1)
+
 
         self.update()
         self.run_dijkstra()
@@ -111,8 +132,9 @@ class Macro(state.State):
             for y in range(self.YBOXES):
                 square = self.squares[x][y]
                 config.DISPLAY.blit(square.terrain.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
-                if square.unit != None:
-                    config.DISPLAY.blit(square.unit.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                if square.squad != None:
+                    config.DISPLAY.blit(square.squad.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                    config.DIRTY_RECTS.append(square)
                 if square.mask != None:
                     self.mask.fill(square.mask)
                     config.DISPLAY.blit(self.mask, square.rect.topleft)
@@ -179,8 +201,8 @@ class Macro(state.State):
             column = []
             column2 = []
         square = self.squares[self.cursor[0]][self.cursor[1]]
-        if square.unit is not None:
-            self.dijkstra(square, square.unit.stats["move"], boxCosts, boxPaths, "")
+        if square.squad is not None:
+            self.dijkstra(square, square.squad.stats["move"], boxCosts, boxPaths, "")
         self.boxCosts = boxCosts
         self.boxPaths = boxPaths
 
@@ -194,11 +216,11 @@ class Macro(state.State):
             return False
         config.DIRTY_RECTS += [grid[newx][newy]]
         if grid[newx][newy].terrain.impass == True:
-            grid[newx][newy].mask = RED
+            #grid[newx][newy].mask = RED
             return False
         if weight - grid[newx][newy].terrain.weight <= boxCosts[newx][newy]:
-            if weight - grid[newx][newy].terrain.weight < 0 and grid[newx][newy].mask != BLUE and grid[x][y].unit == None:
-                grid[newx][newy].mask = RED
+            #if weight - grid[newx][newy].terrain.weight < 0 and grid[newx][newy].mask != BLUE and grid[x][y].squad == None:
+                #grid[newx][newy].mask = RED
             return False
         return True
 

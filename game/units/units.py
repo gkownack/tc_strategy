@@ -11,6 +11,33 @@ class Attributes():
     Divine = "Divine"
     skill_names = [Melee, Ranged, Arcane, Divine]
 
+class Squad():
+    HALF_BOXSIDE = config.MACRO_BOXSIDE/2
+    pic = None
+    units = []
+    team = 0
+    stats = {"move": 8}
+
+    def __init__(self, units, team=0):
+        self.pic = pygame.Surface((config.MACRO_BOXSIDE, config.MACRO_BOXSIDE), pygame.SRCALPHA, 32)
+        self.units = units
+        self.team = team
+
+    def update(self):
+        dirty = False
+        for unit in self.units:
+            if(unit.update()):
+                dirty = True
+
+        self.pic = pygame.Surface((config.MACRO_BOXSIDE, config.MACRO_BOXSIDE), pygame.SRCALPHA, 32)
+
+        self.pic.blit(self.units[0].macro_pic, (0, 0))
+        self.pic.blit(self.units[1].macro_pic, (self.HALF_BOXSIDE, 0))
+        self.pic.blit(self.units[2].macro_pic, (0, self.HALF_BOXSIDE))
+        self.pic.blit(self.units[3].macro_pic, (self.HALF_BOXSIDE, self.HALF_BOXSIDE))
+
+        return dirty
+
 class Unit():
     skills = {} # Initialized to have a skill for each map
     uses = {} # Number of times each skill has been used
@@ -18,7 +45,7 @@ class Unit():
     team = 0
     level = 0
     upgrades = 0
-    primary_attribute = team = pics = pic = pic_index = None
+    primary_attribute = team = pics = macro_pic = micro_pic = pic_index = None
     last_update = time.clock()*1000
     stats = {} # Initialized to include fields: "move", "max_hp", "cur_hp", "luck", "phys_def", "mag_def"
     moves_left = 0
@@ -36,7 +63,8 @@ class Unit():
             total_skills += self.skills[k]
         self.level = max([0,(total_skills / 5) - 1])
         self.level_up()
-        self.pic = self.pics[0]
+        self.macro_pic = self.pics.macro[0]
+        self.micro_pic = self.pics.micro[0]
         self.pic_index = 0
         self.moves_left = self.stats["move"]
         self.can_attack = False
@@ -49,7 +77,8 @@ class Unit():
                 self.pic_index = 1
             elif self.pic_index == 1:
                 self.pic_index = 0
-            self.pic = self.pics[self.pic_index]
+            self.macro_pic = self.pics.macro[self.pic_index]
+            self.micro_pic = self.pics.micro[self.pic_index]
             return True
         return False
 
@@ -79,12 +108,12 @@ class Unit():
             best_skills = list(filter(lambda x: self.skills[x] >= self.skills[skill], best_skills))
         if len(best_skills) == 4:
             self.primary_attribute = None
-            self.pics = images.units["Rogue"]
+            self.pics = images.units[("Rogue",self.team)]
         elif self.primary_attribute in best_skills:
-            self.pics = images.units[self.primary_attribute]
+            self.pics = images.units[(self.primary_attribute,self.team)]
         else:
             self.primary_attribute = random.choice(best_skills)
-            self.pics = images.units[self.primary_attribute]
+            self.pics = images.units[(self.primary_attribute,self.team)]
 
         # Update secondary stats
         self.stats["phys_def"] = (self.skills["Melee"] + self.skills["Ranged"])/3

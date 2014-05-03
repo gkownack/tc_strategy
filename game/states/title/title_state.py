@@ -22,8 +22,8 @@ class Title(state.State):
                 if self.start.collidepoint((mousex, mousey)) == True:
                     config.STATE = macro_state.Macro()
                     config.MACRO = config.STATE
-                    config.MICRO = micro_state.Micro()
-                    config.MICRO.init()
+                    #config.MICRO = micro_state.Micro()
+                    #config.MICRO.init()
                     config.STATE.init()
 
     def update(self):

@@ -44,6 +44,8 @@ class Micro(state.State):
                 self.cursor = (self.cursor[0], min(self.YBOXES - 1, self.cursor[1] + 1))
             elif event.key == K_d or event.key == K_RIGHT:
                 self.cursor = (min(self.XBOXES - 1, self.cursor[0] + 1), self.cursor[1])
+            elif event.key == K_t:
+                self.deselect()
             elif event.key == K_ESCAPE:
                 pygame.quit()
                 sys.exit()
@@ -70,7 +72,7 @@ class Micro(state.State):
                                 self.run_dijkstra()
                         else:
                             self.deselect()
-                    elif square.unit is not None and self.selected is not None:
+                    elif square.unit is not None and self.selected is not None and square.unit.team == self.current_team:
                         self.selected = square
                         self.run_dijkstra()
             elif event.key == K_1:
@@ -113,15 +115,15 @@ class Micro(state.State):
         self.draw_board()
 
     def getTerrain(self, x, y):
-	return self.world[y][x]
+        return self.world[y][x]
 
-    def init(self, primary_terrain=terrain_classes.Grass):
+    def init(self, squad1, squad2, primary_terrain=terrain_classes.Grass):
         config.DISPLAY = pygame.display.set_mode((self.WINDOWWIDTH, self.WINDOWHEIGHT))
         pygame.display.set_caption("Micro")
         config.DISPLAY.fill(WHITE)
         self.squares = []
         column = []
-	self.world = terrain.terrain().generate_terrain(self.XBOXES,self.YBOXES, primary_terrain)
+        self.world = terrain.terrain().generate_terrain(self.XBOXES,self.YBOXES, primary_terrain)
         for x in range(self.XBOXES):
             for y in range(self.YBOXES):
                 column.append(micro_classes.Micro_Square(pygame.Rect(x*self.BOXSIDE, y*self.BOXSIDE, self.BOXSIDE, self.BOXSIDE),
@@ -131,6 +133,7 @@ class Micro(state.State):
         self.cursor = (0,0)
 
         # for testing sprites:
+        """
         self.squares[0][0].unit = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 0)
         self.squares[1][0].unit = units.Unit({"Melee": 1000, "Ranged":0, "Arcane":0, "Divine":0}, 0)
         self.squares[2][0].unit = units.Unit({"Melee": 1000, "Ranged":1, "Arcane":0, "Divine":0}, 0)
@@ -141,8 +144,16 @@ class Micro(state.State):
         self.squares[7][0].unit = units.Unit({"Melee": 0, "Ranged":0, "Arcane":0, "Divine":100}, 1)
         self.squares[8][0].unit = units.Unit({"Melee": 2, "Ranged":0, "Arcane":2, "Divine":2}, 1)
         self.squares[9][0].unit = units.Unit({"Melee": 1, "Ranged":1, "Arcane":1, "Divine":1}, 1)
-        self.units[0] = [self.squares[0][0].unit, self.squares[1][0].unit, self.squares[2][0].unit, self.squares[3][0].unit, self.squares[4][0].unit]
-        self.units[1] = [self.squares[5][0].unit, self.squares[6][0].unit, self.squares[7][0].unit, self.squares[8][0].unit, self.squares[9][0].unit]
+        """
+        self.units = {0:[],1:[]}
+        for i in xrange(len(squad1.units)):
+            self.squares[i][0].unit = squad1.units[i]
+            self.units[0].append(squad1.units[i])
+        for j in xrange(len(squad2.units)):
+            self.squares[j][2].unit = squad2.units[j]
+            self.units[1].append(squad2.units[i])
+        #self.units[0] = [self.squares[0][0].unit, self.squares[1][0].unit, self.squares[2][0].unit, self.squares[3][0].unit, self.squares[4][0].unit]
+        #self.units[1] = [self.squares[5][0].unit, self.squares[6][0].unit, self.squares[7][0].unit, self.squares[8][0].unit, self.squares[9][0].unit]
         self.nextTurn()
         self.update()
         self.run_dijkstra()
@@ -156,7 +167,7 @@ class Micro(state.State):
                 square = self.squares[x][y]
                 config.DISPLAY.blit(square.terrain.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
                 if square.unit != None:
-                    config.DISPLAY.blit(square.unit.pic, (x*self.BOXSIDE, y*self.BOXSIDE))
+                    config.DISPLAY.blit(square.unit.micro_pic, (x*self.BOXSIDE, y*self.BOXSIDE))
                 if square.mask != None:
                     self.mask.fill(square.mask)
                     config.DISPLAY.blit(self.mask, square.rect.topleft)
@@ -236,9 +247,11 @@ class Micro(state.State):
             return False
         if newy < 0 or newy >= YBOXES:
             return False
-        config.DIRTY_RECTS += [grid[newx][newy]]
-        if grid[newx][newy].terrain.impass == True:
-            grid[newx][newy].mask = RED
+        config.DIRTY_RECTS += [grid[newx][newy].rect]
+        square = self.squares[self.cursor[0]][self.cursor[1]]
+        if grid[newx][newy].terrain.impass == True or (grid[newx][newy].unit is not None and grid[newx][newy].unit.team != square.unit.team):
+            if (grid[x][y].unit is None or grid[x][y].unit is square.unit):
+                grid[newx][newy].mask = RED
             return False
         if weight - grid[newx][newy].terrain.weight <= boxCosts[newx][newy]:
             if weight - grid[newx][newy].terrain.weight < 0 and grid[newx][newy].mask != BLUE and grid[x][y].unit == None:
