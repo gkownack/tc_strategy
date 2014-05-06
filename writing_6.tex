@@ -146,9 +146,17 @@ Abstract
 \pagenumbering{arabic}
 \addcontentsline{toc}{section}{Introduction}
 \section*{Introduction}
+This section first introduces the problem our project aims to solve and some
+games similar to ours.
+Then we comment on the value of the literature review and take a look at our
+solution and its level of success.
 
 \addcontentsline{toc}{subsection}{Problem}
 \subsection*{Problem}
+Games are a fun diversion from work, although many games focus on only one type
+of strategic thinking. Our team recognized that there is a need for a game with
+greater diversity of scale which can enable a richer, more challenging,
+strategic experience.
 
 \addcontentsline{toc}{subsection}{Background}
 \subsection*{Background}
@@ -161,14 +169,35 @@ Our project, \emph{Iron Legacy}, is intended to bridge this gap.
 
 \addcontentsline{toc}{subsection}{Literature Review}
 \subsection*{Literature Review}
+Over the course of the project, we looked to three resources in particular:
+``Towards an Evenly Match Opponent AI in Turn-based Strategy Games,''\cite{AI} 
+a paper on adaptive-strength AI, 
+``A Survey of Procedural Terrain Generation Techniques using Evolutionary 
+Algorithms,''\cite{Terrain Generation} a paper that helped us dynamically
+generate the world map, and a forum post ``The Pixel Art 
+Tutorial''\cite{Pixel Art} for creating images in the game.
+In general, these were very useful.
+We developed our terrain generation algorithm using an algorithm from the 
+second paper, and we designed our art using the tips from the pixel art
+tutorial.
+The AI paper was only of limited utility, because we did not create an AI for
+the game, although it did inform our thoughts on a potential AI design.
 
 \addcontentsline{toc}{subsection}{Solution}
 \subsection*{Solution}
-The game lets players control squads on a world-map, and battles spawn new 
-windows where the player controls small-scale battle-tactics.
+Our solution is to create a strategy game in which the player will fight on
+both a larger world map and several smaller local instances.
+We intended to create a fun and challenging gameplay experience by developing
+an intuitive interface and a challenging computer AI.
 
 \addcontentsline{toc}{subsection}{Success}
 \subsection*{Success}
+\emph{Iron Legacy} does not succeed in addressing the problem.
+We did not create the AI as intended, and without an AI, meaningful 
+single-player gameplay is impossible.
+This is a serious issue, but the game is otherwise playable.
+We will elaborate on the difficulties that led to this result later in the 
+report.
 
 % Approach
 \addcontentsline{toc}{section}{Approach}
@@ -190,7 +219,7 @@ Through Jonathan's past experience using TkInter in 15-112 and Greg's
 experience with Pygame, we chose to eschew TkInter in favor of Pygame.
 
 For collaboration and version control, our team used Git \cite{Git} to
-synchronize code and documents.
+synchronize documents and code.
 
 % Results
 \addcontentsline{toc}{section}{Results}
@@ -316,8 +345,23 @@ We would recommend that groups attempting to make a large game be aware
 \bibitem{Civilization}
 \emph{Civilization} - {\tt http://civilizaton.com}
 
-\bibitem{Git}
-Git - {\tt http://www.github.com}
+\bibitem{AI}
+AI
+
+\bibitem{Terrain Generation}
+Terrain Generation
+
+\bibitem{Pixel Art}
+Pixel Art
+
+\bibitem{Python}
+Python - {\tt http://www.python.org}
+
+\bibitem{Java}
+Java - {\tt http://www.java.com}
+
+\bibitem{Javascript}
+Javascript - {\tt http://developer.mozilla.org/en-US/docs/Web/JavaScript}
 
 \bibitem{Pygame}
 Pygame - {\tt http://www.pygame.org}
@@ -325,14 +369,9 @@ Pygame - {\tt http://www.pygame.org}
 \bibitem{TkInter}
 TkInter - {\tt http://wiki.python.org/moin/TkInter}
 
-\bibitem{Python}
-Python - {\tt http://www.python.org}
+\bibitem{Git}
+Git - {\tt http://www.github.com}
 
-\bibitem{Javascript}
-Javascript - {\tt http://developer.mozilla.org/en-US/docs/Web/JavaScript}
-
-\bibitem{Java}
-Java - {\tt http://www.java.com}
 \end{thebibliography}
 
 \end{document}
