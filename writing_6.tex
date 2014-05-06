@@ -174,18 +174,97 @@ simple to play from a user interface perspective.
 \addcontentsline{toc}{section}{Results}
 \section*{Results}
 
-Our project, \emph{Iron Legacy}, was primarily unsuccessful in
-    accomplishing our goals.
+Our project, \emph{Iron Legacy}, was unsuccessful in accomplishing
+    our goals.
+    The final product allows squads to move around on a macro-scale world-map.
+    When squads collide, they spawn a new micro-scale battle.
+    This was the intended core of the game, but the final product is lacking
+    key features.
+
+The most notable missing feature is the AI.
+    The game must be played by multiple players on the same computer.
+    This breaks one of the desired aspects of the game,
+    namely that the world-map would run in real-time.
+    Since players are on the same computer, they must take turns when making
+    moves, even on the macro-scale.
+
+We had also intended for the macro-scale to be able to influence the
+    micro-scale.
+    However, due to time constraints, we were unable to add this feature.
+    Thus, the micro-battles and the world-map are mostly independent,
+    which removes a key element of strategy that we had intended.
+
+In our proposal, we had stated that our goal was to make a fun, challenging,
+    strategic, and simple game.
+    However, without an AI, it is hard to guage the ``challenge'' of our game.
+    As mentioned, the strategic elements were lessened by the lack of
+    interaction between the micro-battles and the world-map.
+    Our game also lacks certain graphical elements, such as which squares
+    you can attark and how much health each unit has, making the interface
+    confusing.
+
+Our proposal gave very vague measures for evaluation.
+    In particular, it said that ``the game must be free of all bugs that
+    inhibit the natural flow of the game.''
+    From there, we suggested that we would make the game publicly available,
+    once it was playable.
+    Last, we suggested that there should be no single-best tactic in the game,
+    but that all tactics should have advantages and disadvantages.
+
+As the game only recently reached a playable state,
+    we never had the oportunity to make it publicly available.
+    As such, we never received outside opinions about the quality of the game.
+    Moreover, we cannot say whether any strategies are ``best,''
+    as we have not collected any data from games.
+
+Last, while the game is now playable, it is certainly not ``free of all bugs.''
+    There are a few issues with the square highlighting that shows
+    where a unit can move.
+    Further, the game occasionally crashes when a unit is killed.
+    This blatantly inhibits the natural flow of the game.
 
 % Discussion
 \addcontentsline{toc}{section}{Discussion}
 \section*{Discussion}
 
+In this section, we will discuss the lessons we learned from working 
+    on a large group project.
+    We will then make recommendations for how to improve \emph{Iron Legacy}
+    or create other games of a similar nature.
+
 \addcontentsline{toc}{subsection}{Lessons Learned}
 \subsection*{Lessons Learned}
 
+Our biggest lesson was the importance of meeting as a group.
+    When we began discussing \emph{Iron Legacy}, the entire team was thrilled
+    by the idea.
+    However, we all prioritized other assignments above this game,
+    and so we did not make much progress during the first month of development.
+    Because we didn't have much progress, we didn't think it was worth
+    getting together as a group.
+    In our experience, when we did meet, we worked very productively
+    and enthusiastically.
+    Had we begun by scheduling a weekly meeting time,
+    we probably would have stayed closer to our original Gantt chart.
+
+We also learned the importance of designing your interfaces before you start
+    programming.
+    As a team, we wrote code in a very \emph{ad hoc} manner.
+    For instance, in writing the interface for the player to control the game,
+    we put all of the logic for unit movement into the key-listener's
+    event-handler.
+    While this makes sense for the player, it means that the AI would have
+    to press a key in order to do anything.
+    This was one of the primary reasons that we never wrote AI.
+    In reality, we needed to move all of the logic to separate functions that
+    both the AI and the key-listener could call.
+    As time went on, the task of refactoring our code to the interface model
+    became increasingly intimidating, and it was never accomplished.
+
 \addcontentsline{toc}{subsection}{Recommendations}
 \subsection*{Recommendations}
+
+
 
 % Sources Cited
 \addcontentsline{toc}{section}{Sources Cited}
