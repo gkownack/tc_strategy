@@ -159,11 +159,11 @@ solution and its level of success.
 
 \addcontentsline{toc}{subsection}{Problem}
 \subsection*{Problem}
-Games are a fun diversion from work, although many games focus on only one type
-of strategic thinking.
-For example, there are games that allow the player to control a units in a
-small-scale battle, and some games allow the player to control
-squads of units in a world-map.
+There are games that allow the player to control a units in a
+small-scale battle, however these games do not give a sense of the overarching
+war which leads to these battles.
+Other games allow the player to control squads of units in a world-map,
+however squads fight and kill each-other based on a deterministic algorithm.
 Our team recognized that there is a need for a game where the player controls
 battles on the both scales.
 
@@ -172,9 +172,9 @@ battles on the both scales.
 We designed \emph{Iron Legacy} with the games 
 \emph{Fire Emblem}$\,^1$ and \emph{Civilization}$\,^2$ 
 in mind.
-Broadly, \emph{Fire Emblem} focuses on tactics in individual battles, while
-\emph{Civilization} focuses on overarching war strategy.
-Our project, \emph{Iron Legacy}, is intended to bridge this gap.
+\emph{Fire Emblem} is recognized as one of the best games which
+focuses on tactics in individual battles,
+while \emph{Civilization} is praised in the genre of turn-based war strategy.
 
 \addcontentsline{toc}{subsection}{Literature Review}
 \subsection*{Literature Review}
@@ -189,8 +189,9 @@ In general, these were very useful.
 We developed our terrain generation algorithm using an algorithm from the 
 second paper, and we designed our art using the tips from the pixel art
 tutorial.
-The AI paper was only of limited utility, because we did not create an AI for
-the game, although it did inform our thoughts on a potential AI design.
+The AI paper of limited use, because we did not create an AI for
+the game. However, we did think that the paper was useful
+as it did inform our thoughts on a potential AI design.
 
 \addcontentsline{toc}{subsection}{Solution}
 \subsection*{Solution}
@@ -205,11 +206,22 @@ an intuitive interface and a challenging computer AI.
 \addcontentsline{toc}{subsection}{Success}
 \subsection*{Success}
 \emph{Iron Legacy} does not succeed in addressing the problem.
-We did not create the AI as intended, and without an AI, meaningful 
-single-player gameplay is impossible.
+While the core of the game is finished, many of the features have not been
+implemented.
+Most notably, we did not create the AI as intended,
+and without an AI, meaningful single-player gameplay is impossible.
 Instead, the game is only playable by multiple players on a single computer.
+Further, we had intended for squads on the world-map to influence
+the micro-battles, but this feature is also unimplemented.
 We will elaborate on the difficulties faced in the Results section of this
 report.
+
+Keeping our overwhelming failure in mind, we did have some limited success.
+When two squads collide on the world-map, new micro-battles spawn.
+All terrain is randomly generated, using one of the procedural algorithms
+we discovered in our literature review.
+We also created a very simple level-up system that makes units stronger
+based on their most used skills.
 
 % Approach
 \addcontentsline{toc}{section}{Approach}
@@ -228,10 +240,10 @@ From a technical standpoint, we needed a framework in which we could write the
 game logic, handle user input, and update the display in real time.
 We considered the Python$\,^6$, Java$\,^7$, and 
 Javascript$\,^8$ languages for writing the game. 
-We settled on Python since we all knew Python already and we had some ideas of
-game libraries we could use.
-The two libraries we looked at were Pygame$\,^9$ and 
-TkInter$\,^{10}$.
+We settled on Python because it was the only language that we all knew
+and we had some ideas of game libraries we could use.
+The two libraries we looked at were Pygame$\,^9$ and TkInter$\,^{10}$.
+
 Through Jonathan's past experience using TkInter in 15-112 and Greg's 
 experience with Pygame, we chose to eschew TkInter in favor of Pygame.
 
