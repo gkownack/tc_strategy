@@ -80,7 +80,7 @@ Final Report:\\
 Iron Legacy
 \end{center}
 
-\vspace{4em}
+\vfill
 
 \begin{center}
 \textbf{Team 9}\\
@@ -90,7 +90,7 @@ Greg Kownacki\\
 Billy Wood
 \end{center}
 
-\vspace{4em}
+\vfill
 
 \begin{center}
 \textbf{Submitted to}\\
@@ -100,7 +100,7 @@ School of Computer Science\\
 Carnegie Mellon University
 \end{center}
 
-\vspace{4em}
+\vfill
 
 \begin{center}
 \textbf{Prepared by}\\
@@ -122,8 +122,6 @@ May 7, 2014
 \end{center}
 
 \vfill
-
-% TODO: formatting
 
 \begin{abstract}
 This report describes \emph{Iron Legacy}, a turn-based strategy game that aims 
@@ -161,15 +159,18 @@ solution and its level of success.
 \addcontentsline{toc}{subsection}{Problem}
 \subsection*{Problem}
 Games are a fun diversion from work, although many games focus on only one type
-of strategic thinking. Our team recognized that there is a need for a game with
-greater diversity of scale which can enable a richer, more challenging,
-strategic experience.
+of strategic thinking.
+For example, there are games that allow the player to control a units in a
+small-scale battle, and some games allow the player to control
+squads of units in a world-map.
+Our team recognized that there is a need for a game where the player controls
+battles on the both scales.
 
 \addcontentsline{toc}{subsection}{Background}
 \subsection*{Background}
 We designed \emph{Iron Legacy} with the games 
-\emph{Fire Emblem}\cite{FireEmblem} and \emph{Civilization}\cite{Civilization} 
-very much in mind.
+\emph{Fire Emblem}\cite{FireEmblem} and \emph{Civilization}\cite{Civilization}
+in mind.
 Broadly, \emph{Fire Emblem} focuses on tactics in individual battles, while
 \emph{Civilization} focuses on overarching war strategy.
 Our project, \emph{Iron Legacy}, is intended to bridge this gap.
@@ -192,8 +193,11 @@ the game, although it did inform our thoughts on a potential AI design.
 
 \addcontentsline{toc}{subsection}{Solution}
 \subsection*{Solution}
-Our solution is to create a strategy game in which the player will fight on
-both a larger world map and several smaller local instances.
+Our solution is to create a strategy game in which the player will move squads
+on a large-scale world-map, and spawn off micro-scale battles when two squads
+collide.
+This would combine the best elements of both game-styles,
+thus filling the observed gap in the strategy genre.
 We intended to create a fun and challenging gameplay experience by developing
 an intuitive interface and a challenging computer AI.
 
@@ -202,8 +206,8 @@ an intuitive interface and a challenging computer AI.
 \emph{Iron Legacy} does not succeed in addressing the problem.
 We did not create the AI as intended, and without an AI, meaningful 
 single-player gameplay is impossible.
-This is a serious issue, but the game is otherwise playable.
-We will elaborate on the difficulties that led to this result later in the 
+Instead, the game is only playable by multiple players on a single computer.
+We will elaborate on the difficulties faced in the Results section of this
 report.
 
 % Approach
